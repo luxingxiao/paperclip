@@ -34,6 +34,7 @@ import { cn } from "../lib/utils";
 import { NotFoundPage } from "../pages/NotFound";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 const INSTANCE_SETTINGS_MEMORY_KEY = "paperclip.lastInstanceSettingsPath";
 
@@ -301,7 +302,12 @@ export function Layout() {
                   <span className="truncate">{t("common.documentation")}</span>
                 </a>
                 {health?.version && (
-                  <span className="px-2 text-xs text-muted-foreground shrink-0">v{health.version}</span>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="px-2 text-xs text-muted-foreground shrink-0 cursor-default">v</span>
+                    </TooltipTrigger>
+                    <TooltipContent>v{health.version}</TooltipContent>
+                  </Tooltip>
                 )}
                 <Button variant="ghost" size="icon-sm" className="text-muted-foreground shrink-0" asChild>
                   <Link
@@ -355,7 +361,12 @@ export function Layout() {
                   <span className="truncate">{t("common.documentation")}</span>
                 </a>
                 {health?.version && (
-                  <span className="px-2 text-xs text-muted-foreground shrink-0">v{health.version}</span>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="px-2 text-xs text-muted-foreground shrink-0 cursor-default">v</span>
+                    </TooltipTrigger>
+                    <TooltipContent>v{health.version}</TooltipContent>
+                  </Tooltip>
                 )}
                 <Button variant="ghost" size="icon-sm" className="text-muted-foreground shrink-0" asChild>
                   <Link

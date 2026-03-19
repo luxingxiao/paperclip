@@ -642,7 +642,9 @@
     "sourceAutomation": "Automation",
     "requestedAt": "requested {{timeAgo}} from IP {{ip}}",
     "emailLabel": "email:",
-    "adapterLabel": "adapter:"
+    "adapterLabel": "adapter:",
+    "commentedTimeAgo": "commented {{timeAgo}}",
+    "updatedTimeAgo": "updated {{timeAgo}}"
   },
   "companySettings": {
     "breadcrumb": "Settings",

@@ -433,12 +433,6 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
       heartbeat: mergedHeartbeat,
     };
   }, [isCreate, overlay.heartbeat, runtimeConfig, val]);
-  const sessionCompaction = useMemo(
-    () => resolveSessionCompactionPolicy(adapterType, effectiveRuntimeConfig),
-    [adapterType, effectiveRuntimeConfig],
-  );
-  const showSessionCompactionCard = Boolean(sessionCompaction.adapterSessionManagement);
-
   return (
     <div className={cn("relative", cards && "space-y-6")}>
       {/* ---- Floating Save button (edit mode, when dirty) ---- */}
@@ -742,7 +736,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                     )}
                 </>
               )}
-              <Field label={t("agentConfigForm.bootstrapPrompt")} hint={help.bootstrapPrompt}>
+<Field label={t("agentConfigForm.bootstrapPrompt")} hint={help.bootstrapPrompt}>
                 <MarkdownEditor
                   value={
                     isCreate
@@ -868,12 +862,6 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
               numberHint={help.intervalSec}
               showNumber={val!.heartbeatEnabled}
             />
-            {showSessionCompactionCard && (
-              <SessionCompactionPolicyCard
-                adapterType={adapterType}
-                resolution={sessionCompaction}
-              />
-            )}
           </div>
         </div>
       ) : (
@@ -896,12 +884,6 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                 numberHint={help.intervalSec}
                 showNumber={eff("heartbeat", "enabled", heartbeat.enabled !== false)}
               />
-              {showSessionCompactionCard && (
-                <SessionCompactionPolicyCard
-                  adapterType={adapterType}
-                  resolution={sessionCompaction}
-                />
-              )}
             </div>
             <CollapsibleSection
               title={t("agentConfigForm.advancedRunPolicy")}

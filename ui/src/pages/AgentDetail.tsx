@@ -707,7 +707,7 @@ export function AgentDetail() {
         crumbs.push({ label: t("agentDetail.breadcrumbRuns"), href: `/agents/${canonicalAgentRef}/runs` });
         crumbs.push({ label: `Run ${urlRunId.slice(0, 8)}` });
       } else if (activeView === "configuration") {
-        crumbs.push({ label: t("agentDetail.breadcrumbConfig") });
+crumbs.push({ label: t("agentDetail.breadcrumbConfig") });
       } else if (activeView === "skills") {
         crumbs.push({ label: t("agentDetail.breadcrumbSkills") });
       } else if (activeView === "runs") {
@@ -867,7 +867,7 @@ export function AgentDetail() {
         >
           <PageTabBar
             items={[
-              { value: "dashboard", label: t("agentDetail.tabDashboard") },
+{ value: "dashboard", label: t("agentDetail.tabDashboard") },
               { value: "configuration", label: t("agentDetail.tabConfiguration") },
               { value: "skills", label: t("agentDetail.tabSkills") },
               { value: "runs", label: t("agentDetail.tabRuns") },
@@ -962,11 +962,11 @@ export function AgentDetail() {
         />
       )}
 
-      {activeView === "skills" && (
+      {/* {activeView === "skills" && (
         <SkillsTab
           agent={agent}
         />
-      )}
+      )} */}{/* TODO: bring back later */}
 
       {activeView === "runs" && (
         <RunsTab

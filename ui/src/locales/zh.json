@@ -643,7 +643,9 @@
     "sourceAutomation": "自动化执行",
     "requestedAt": "请求于 {{timeAgo}}，IP：{{ip}}",
     "emailLabel": "邮筱：",
-    "adapterLabel": "适配器："
+    "adapterLabel": "适配器：",
+    "commentedTimeAgo": "评论于 {{timeAgo}}",
+    "updatedTimeAgo": "更新于 {{timeAgo}}"
   },
   "companySettings": {
     "breadcrumb": "设置",
