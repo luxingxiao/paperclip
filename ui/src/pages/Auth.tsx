@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "@/lib/router";
+import { useTranslation } from "react-i18next";
 import { authApi } from "../api/auth";
 import { queryKeys } from "../lib/queryKeys";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import { Sparkles } from "lucide-react";
 type AuthMode = "sign_in" | "sign_up";
 
 export function AuthPage() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -51,7 +53,7 @@ export function AuthPage() {
       navigate(nextPath, { replace: true });
     },
     onError: (err) => {
-      setError(err instanceof Error ? err.message : "Authentication failed");
+      setError(err instanceof Error ? err.message : t("auth.authFailed"));
     },
   });
 
@@ -63,7 +65,7 @@ export function AuthPage() {
   if (isSessionLoading) {
     return (
       <div className="fixed inset-0 flex items-center justify-center">
-        <p className="text-sm text-muted-foreground">Loading…</p>
+        <p className="text-sm text-muted-foreground">{t("auth.loading")}</p>
       </div>
     );
   }
@@ -79,12 +81,10 @@ export function AuthPage() {
           </div>
 
           <h1 className="text-xl font-semibold">
-            {mode === "sign_in" ? "Sign in to Paperclip" : "Create your Paperclip account"}
+            {mode === "sign_in" ? t("auth.signInTitle") : t("auth.signUpTitle")}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {mode === "sign_in"
-              ? "Use your email and password to access this instance."
-              : "Create an account for this instance. Email confirmation is not required in v1."}
+            {mode === "sign_in" ? t("auth.signInSubtitle") : t("auth.signUpSubtitle")}
           </p>
 
           <form
@@ -96,7 +96,7 @@ export function AuthPage() {
           >
             {mode === "sign_up" && (
               <div>
-                <label className="text-xs text-muted-foreground mb-1 block">Name</label>
+                <label className="text-xs text-muted-foreground mb-1 block">{t("auth.nameLabel")}</label>
                 <input
                   className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/50"
                   value={name}
@@ -107,7 +107,7 @@ export function AuthPage() {
               </div>
             )}
             <div>
-              <label className="text-xs text-muted-foreground mb-1 block">Email</label>
+              <label className="text-xs text-muted-foreground mb-1 block">{t("auth.emailLabel")}</label>
               <input
                 className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/50"
                 type="email"
@@ -118,7 +118,7 @@ export function AuthPage() {
               />
             </div>
             <div>
-              <label className="text-xs text-muted-foreground mb-1 block">Password</label>
+              <label className="text-xs text-muted-foreground mb-1 block">{t("auth.passwordLabel")}</label>
               <input
                 className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/50"
                 type="password"
@@ -130,15 +130,15 @@ export function AuthPage() {
             {error && <p className="text-xs text-destructive">{error}</p>}
             <Button type="submit" disabled={!canSubmit || mutation.isPending} className="w-full">
               {mutation.isPending
-                ? "Working…"
+                ? t("auth.working")
                 : mode === "sign_in"
-                  ? "Sign In"
-                  : "Create Account"}
+                  ? t("auth.signIn")
+                  : t("auth.signUp")}
             </Button>
           </form>
 
           <div className="mt-5 text-sm text-muted-foreground">
-            {mode === "sign_in" ? "Need an account?" : "Already have an account?"}{" "}
+            {mode === "sign_in" ? t("auth.needAccount") : t("auth.haveAccount")}{" "}
             <button
               type="button"
               className="font-medium text-foreground underline underline-offset-2"
@@ -147,7 +147,7 @@ export function AuthPage() {
                 setMode(mode === "sign_in" ? "sign_up" : "sign_in");
               }}
             >
-              {mode === "sign_in" ? "Create one" : "Sign in"}
+              {mode === "sign_in" ? t("auth.createOne") : t("auth.signInLink")}
             </button>
           </div>
         </div>

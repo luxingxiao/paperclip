@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useLocation, useNavigate } from "@/lib/router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { approvalsApi } from "../api/approvals";
@@ -65,12 +66,7 @@ type SectionKey =
   | "failed_runs"
   | "alerts";
 
-const RUN_SOURCE_LABELS: Record<string, string> = {
-  timer: "Scheduled",
-  assignment: "Assignment",
-  on_demand: "Manual",
-  automation: "Automation",
-};
+// RUN_SOURCE_LABELS is now resolved via t() in FailedRunCard
 
 function firstNonEmptyLine(value: string | null | undefined): string | null {
   if (!value) return null;
@@ -110,9 +106,16 @@ function FailedRunCard({
 }) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const issueId = readIssueIdFromRun(run);
   const issue = issueId ? issueById.get(issueId) ?? null : null;
-  const sourceLabel = RUN_SOURCE_LABELS[run.invocationSource] ?? "Manual";
+  const SOURCE_LABELS: Record<string, string> = {
+    timer: t("inbox.sourceScheduled"),
+    assignment: t("inbox.sourceAssignment"),
+    on_demand: t("inbox.sourceManual"),
+    automation: t("inbox.sourceAutomation"),
+  };
+  const sourceLabel = SOURCE_LABELS[run.invocationSource] ?? t("inbox.sourceManual");
   const displayError = runFailureMessage(run);
 
   const retryRun = useMutation({
@@ -149,7 +152,7 @@ function FailedRunCard({
         type="button"
         onClick={onDismiss}
         className="absolute right-2 top-2 z-10 rounded-md p-1 text-muted-foreground opacity-0 transition-opacity hover:bg-accent hover:text-foreground group-hover:opacity-100"
-        aria-label="Dismiss"
+        aria-label={t("inbox.dismiss")}
       >
         <X className="h-4 w-4" />
       </button>
@@ -167,7 +170,7 @@ function FailedRunCard({
           </Link>
         ) : (
           <span className="block text-sm text-muted-foreground">
-            {run.errorCode ? `Error code: ${run.errorCode}` : "No linked issue"}
+            {run.errorCode ? `${t("inbox.errorCode")} ${run.errorCode}` : t("inbox.noLinkedIssue")}
           </span>
         )}
 
@@ -198,7 +201,7 @@ function FailedRunCard({
               disabled={retryRun.isPending}
             >
               <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
-              {retryRun.isPending ? "Retrying…" : "Retry"}
+              {retryRun.isPending ? t("inbox.retrying") : t("inbox.retry")}
             </Button>
             <Button
               type="button"
@@ -208,7 +211,7 @@ function FailedRunCard({
               asChild
             >
               <Link to={`/agents/${run.agentId}/runs/${run.id}`}>
-                Open run
+                {t("inbox.openRun")}
                 <ArrowUpRight className="ml-1.5 h-3.5 w-3.5" />
               </Link>
             </Button>
@@ -225,7 +228,7 @@ function FailedRunCard({
 
         {retryRun.isError && (
           <div className="text-xs text-destructive">
-            {retryRun.error instanceof Error ? retryRun.error.message : "Failed to retry run"}
+            {retryRun.error instanceof Error ? retryRun.error.message : t("inbox.retryFailed")}
           </div>
         )}
       </div>
@@ -239,6 +242,7 @@ export function Inbox() {
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
   const [actionError, setActionError] = useState<string | null>(null);
   const [allCategoryFilter, setAllCategoryFilter] = useState<InboxCategoryFilter>("everything");
   const [allApprovalFilter, setAllApprovalFilter] = useState<InboxApprovalFilter>("all");
@@ -263,7 +267,7 @@ export function Inbox() {
   });
 
   useEffect(() => {
-    setBreadcrumbs([{ label: "Inbox" }]);
+    setBreadcrumbs([{ label: t("inbox.breadcrumb") }]);
   }, [setBreadcrumbs]);
 
   useEffect(() => {
@@ -493,7 +497,7 @@ export function Inbox() {
   });
 
   if (!selectedCompanyId) {
-    return <EmptyState icon={InboxIcon} message="Select a company to view inbox." />;
+    return <EmptyState icon={InboxIcon} message={t("inbox.selectCompany")} />;
   }
 
   const hasRunFailures = failedRuns.length > 0;
@@ -563,10 +567,10 @@ export function Inbox() {
               items={[
                 {
                   value: "recent",
-                  label: "Recent",
+                  label: t("inbox.tabRecent"),
                 },
-                { value: "unread", label: "Unread" },
-                { value: "all", label: "All" },
+                { value: "unread", label: t("inbox.tabUnread") },
+                { value: "all", label: t("inbox.tabAll") },
               ]}
             />
           </Tabs>
@@ -580,7 +584,7 @@ export function Inbox() {
               onClick={() => markAllReadMutation.mutate(unreadIssueIds)}
               disabled={markAllReadMutation.isPending}
             >
-              {markAllReadMutation.isPending ? "Marking…" : "Mark all as read"}
+              {markAllReadMutation.isPending ? t("inbox.marking") : t("inbox.markAllRead")}
             </Button>
           )}
         </div>
@@ -592,15 +596,15 @@ export function Inbox() {
               onValueChange={(value) => setAllCategoryFilter(value as InboxCategoryFilter)}
             >
               <SelectTrigger className="h-8 w-[170px] text-xs">
-                <SelectValue placeholder="Category" />
+                <SelectValue placeholder={t("inbox.category")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="everything">All categories</SelectItem>
-                <SelectItem value="issues_i_touched">My recent issues</SelectItem>
-                <SelectItem value="join_requests">Join requests</SelectItem>
-                <SelectItem value="approvals">Approvals</SelectItem>
-                <SelectItem value="failed_runs">Failed runs</SelectItem>
-                <SelectItem value="alerts">Alerts</SelectItem>
+                <SelectItem value="everything">{t("inbox.allCategories")}</SelectItem>
+                <SelectItem value="issues_i_touched">{t("inbox.myRecentIssues")}</SelectItem>
+                <SelectItem value="join_requests">{t("inbox.joinRequestsFilter")}</SelectItem>
+                <SelectItem value="approvals">{t("inbox.approvalsFilter")}</SelectItem>
+                <SelectItem value="failed_runs">{t("inbox.failedRunsFilter")}</SelectItem>
+                <SelectItem value="alerts">{t("inbox.alertsFilter")}</SelectItem>
               </SelectContent>
             </Select>
 
@@ -610,12 +614,12 @@ export function Inbox() {
                 onValueChange={(value) => setAllApprovalFilter(value as InboxApprovalFilter)}
               >
                 <SelectTrigger className="h-8 w-[170px] text-xs">
-                  <SelectValue placeholder="Approval status" />
+                  <SelectValue placeholder={t("inbox.approvalStatus")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All approval statuses</SelectItem>
-                  <SelectItem value="actionable">Needs action</SelectItem>
-                  <SelectItem value="resolved">Resolved</SelectItem>
+                  <SelectItem value="all">{t("inbox.allApprovalStatuses")}</SelectItem>
+                  <SelectItem value="actionable">{t("inbox.needsAction")}</SelectItem>
+                  <SelectItem value="resolved">{t("inbox.resolved")}</SelectItem>
                 </SelectContent>
               </Select>
             )}
@@ -635,10 +639,10 @@ export function Inbox() {
           icon={InboxIcon}
           message={
             tab === "unread"
-              ? "No new inbox items."
+              ? t("inbox.noItemsUnread")
               : tab === "recent"
-                ? "No recent inbox items."
-                : "No inbox items match these filters."
+                ? t("inbox.noItemsRecent")
+                : t("inbox.noItemsFiltered")
           }
         />
       )}
@@ -648,7 +652,7 @@ export function Inbox() {
           {showSeparatorBefore("approvals") && <Separator />}
           <div>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-              {tab === "unread" ? "Approvals Needing Action" : "Approvals"}
+              {tab === "unread" ? t("inbox.sectionApprovalsAction") : t("inbox.sectionApprovals")}
             </h3>
             <div className="grid gap-3">
               {approvalsToRender.map((approval) => (
@@ -676,7 +680,7 @@ export function Inbox() {
           {showSeparatorBefore("join_requests") && <Separator />}
           <div>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-              Join Requests
+              {t("inbox.sectionJoinRequests")}
             </h3>
             <div className="grid gap-3">
               {joinRequests.map((joinRequest) => (
@@ -685,19 +689,19 @@ export function Inbox() {
                     <div className="space-y-1">
                       <p className="text-sm font-medium">
                         {joinRequest.requestType === "human"
-                          ? "Human join request"
-                          : `Agent join request${joinRequest.agentName ? `: ${joinRequest.agentName}` : ""}`}
+                          ? t("inbox.humanJoinRequest")
+                          : joinRequest.agentName ? t("inbox.agentJoinRequest", { name: joinRequest.agentName }) : t("inbox.agentJoinRequest", { name: "" }).replace(": ", "")}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        requested {timeAgo(joinRequest.createdAt)} from IP {joinRequest.requestIp}
+                        {t("inbox.requestedAt", { timeAgo: timeAgo(joinRequest.createdAt), ip: joinRequest.requestIp })}
                       </p>
                       {joinRequest.requestEmailSnapshot && (
                         <p className="text-xs text-muted-foreground">
-                          email: {joinRequest.requestEmailSnapshot}
+                          {t("inbox.emailLabel")} {joinRequest.requestEmailSnapshot}
                         </p>
                       )}
                       {joinRequest.adapterType && (
-                        <p className="text-xs text-muted-foreground">adapter: {joinRequest.adapterType}</p>
+                        <p className="text-xs text-muted-foreground">{t("inbox.adapterLabel")} {joinRequest.adapterType}</p>
                       )}
                     </div>
                     <div className="flex items-center gap-2">
@@ -707,14 +711,14 @@ export function Inbox() {
                         disabled={approveJoinMutation.isPending || rejectJoinMutation.isPending}
                         onClick={() => rejectJoinMutation.mutate(joinRequest)}
                       >
-                        Reject
+                        {t("inbox.reject")}
                       </Button>
                       <Button
                         size="sm"
                         disabled={approveJoinMutation.isPending || rejectJoinMutation.isPending}
                         onClick={() => approveJoinMutation.mutate(joinRequest)}
                       >
-                        Approve
+                        {t("inbox.approve")}
                       </Button>
                     </div>
                   </div>
@@ -730,7 +734,7 @@ export function Inbox() {
           {showSeparatorBefore("failed_runs") && <Separator />}
           <div>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-              Failed Runs
+              {t("inbox.sectionFailedRuns")}
             </h3>
             <div className="grid gap-3">
               {failedRuns.map((run) => (
@@ -753,7 +757,7 @@ export function Inbox() {
           {showSeparatorBefore("alerts") && <Separator />}
           <div>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-              Alerts
+              {t("inbox.sectionAlerts")}
             </h3>
             <div className="divide-y divide-border border border-border">
               {showAggregateAgentError && (
@@ -764,15 +768,14 @@ export function Inbox() {
                   >
                     <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 dark:text-red-400" />
                     <span className="text-sm">
-                      <span className="font-medium">{dashboard!.agents.error}</span>{" "}
-                      {dashboard!.agents.error === 1 ? "agent has" : "agents have"} errors
+                      {t("inbox.agentErrors", { count: dashboard!.agents.error })}
                     </span>
                   </Link>
                   <button
                     type="button"
                     onClick={() => dismiss("alert:agent-errors")}
                     className="rounded-md p-1 text-muted-foreground opacity-0 transition-opacity hover:bg-accent hover:text-foreground group-hover/alert:opacity-100"
-                    aria-label="Dismiss"
+                    aria-label={t("inbox.dismiss")}
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>
@@ -786,16 +789,14 @@ export function Inbox() {
                   >
                     <AlertTriangle className="h-4 w-4 shrink-0 text-yellow-400" />
                     <span className="text-sm">
-                      Budget at{" "}
-                      <span className="font-medium">{dashboard!.costs.monthUtilizationPercent}%</span>{" "}
-                      utilization this month
+                      {t("inbox.budgetUtilization", { percent: dashboard!.costs.monthUtilizationPercent })}
                     </span>
                   </Link>
                   <button
                     type="button"
                     onClick={() => dismiss("alert:budget")}
                     className="rounded-md p-1 text-muted-foreground opacity-0 transition-opacity hover:bg-accent hover:text-foreground group-hover/alert:opacity-100"
-                    aria-label="Dismiss"
+                    aria-label={t("inbox.dismiss")}
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>
