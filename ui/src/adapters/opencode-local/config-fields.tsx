@@ -1,4 +1,5 @@
 import type { AdapterConfigFieldsProps } from "../types";
+import { useTranslation } from "react-i18next";
 import {
   Field,
   DraftInput,
@@ -7,8 +8,6 @@ import { ChoosePathButton } from "../../components/PathInstructionsModal";
 
 const inputClass =
   "w-full rounded-md border border-border px-2.5 py-1.5 bg-transparent outline-none text-sm font-mono placeholder:text-muted-foreground/40";
-const instructionsFileHint =
-  "Absolute path to a markdown file (e.g. AGENTS.md) that defines this agent's behavior. Injected into the system prompt at runtime.";
 
 export function OpenCodeLocalConfigFields({
   isCreate,
@@ -18,8 +17,10 @@ export function OpenCodeLocalConfigFields({
   eff,
   mark,
 }: AdapterConfigFieldsProps) {
+  const { t } = useTranslation();
+
   return (
-    <Field label="Agent instructions file" hint={instructionsFileHint}>
+    <Field label={t("adapterConfigFields.agentInstructionsFile")} hint={t("adapterConfigFields.instructionsFileHintSystem")}>
       <div className="flex items-center gap-2">
         <DraftInput
           value={
@@ -38,7 +39,7 @@ export function OpenCodeLocalConfigFields({
           }
           immediate
           className={inputClass}
-          placeholder="/absolute/path/to/AGENTS.md"
+          placeholder={t("adapterConfigFields.instructionsFilePathPlaceholder")}
         />
         <ChoosePathButton />
       </div>

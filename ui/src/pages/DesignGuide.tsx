@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   BookOpen,
   Bot,
@@ -173,6 +174,7 @@ function Swatch({ name, cssVar }: { name: string; cssVar: string }) {
 /* ------------------------------------------------------------------ */
 
 export function DesignGuide() {
+  const { t } = useTranslation();
   const [status, setStatus] = useState("todo");
   const [priority, setPriority] = useState("medium");
   const [selectValue, setSelectValue] = useState("in_progress");
@@ -359,17 +361,17 @@ export function DesignGuide() {
 
         <SubSection title="With icons">
           <div className="flex items-center gap-2 flex-wrap">
-            <Button><Plus /> New Issue</Button>
-            <Button variant="outline"><Upload /> Upload</Button>
-            <Button variant="destructive"><Trash2 /> Delete</Button>
-            <Button size="sm"><Plus /> Add</Button>
+            <Button><Plus /> {t("sidebar.newIssue")}</Button>
+            <Button variant="outline"><Upload /> {t("designGuide.upload")}</Button>
+            <Button variant="destructive"><Trash2 /> {t("designGuide.delete")}</Button>
+            <Button size="sm"><Plus /> {t("designGuide.add")}</Button>
           </div>
         </SubSection>
 
         <SubSection title="States">
           <div className="flex items-center gap-2 flex-wrap">
-            <Button disabled>Disabled</Button>
-            <Button variant="outline" disabled>Disabled Outline</Button>
+            <Button disabled>{t("designGuide.disabled")}</Button>
+            <Button variant="outline" disabled>{t("designGuide.disabledOutline")}</Button>
           </div>
         </SubSection>
       </Section>
@@ -710,14 +712,14 @@ export function DesignGuide() {
                 </CommandItem>
               </CommandGroup>
               <CommandSeparator />
-              <CommandGroup heading="Actions">
+              <CommandGroup heading={t("designGuide.actions")}>
                 <CommandItem>
                   <CommandIcon className="h-4 w-4" />
-                  Open command palette
+                  {t("designGuide.openCommandPalette")}
                 </CommandItem>
                 <CommandItem>
                   <Plus className="h-4 w-4" />
-                  Create new issue
+                  {t("designGuide.createNewIssue")}
                 </CommandItem>
               </CommandGroup>
             </CommandList>
@@ -1188,14 +1190,14 @@ export function DesignGuide() {
             </div>
           </div>
           <div className="space-y-2">
-            <Textarea placeholder="Leave a comment..." rows={3} />
-            <Button size="sm">Comment</Button>
+            <Textarea placeholder={t("designGuide.leaveComment")} rows={3} />
+            <Button size="sm">{t("designGuide.comment")}</Button>
           </div>
         </div>
       </Section>
 
-      {/* ============================================================ */}
-      {/*  COST TABLE PATTERN                                           */}
+            ["Cmd+K / Ctrl+K", t("designGuide.openCommandPalette")],
+            ["C", t("designGuide.newIssueShortcut")],
       {/* ============================================================ */}
       <Section title="Cost Table Pattern">
         <div className="border border-border rounded-lg overflow-hidden">
