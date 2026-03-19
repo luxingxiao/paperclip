@@ -99,6 +99,7 @@ export function PayloadTemplateJsonField({
   config,
   mark,
 }: JsonFieldProps) {
+  const { t } = useTranslation();
   const existing = formatJsonObject(config.payloadTemplate);
   const [draft, setDraft] = useState(existing);
 

@@ -130,7 +130,7 @@ export function BillerSpendCard({
                     <div className="text-right tabular-nums">
                       <div className="font-medium">{formatCents(entry.costCents)}</div>
                       <div className="text-muted-foreground">
-                        {t("billerSpendCard.tokensShort", { count: formatTokens(entry.inputTokens + entry.outputTokens) })}
+                        {t("billerSpendCard.tokensShort", { count: entry.inputTokens + entry.outputTokens })}
                       </div>
                     </div>
                   </div>

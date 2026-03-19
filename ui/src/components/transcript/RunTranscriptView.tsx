@@ -376,7 +376,7 @@ export function normalizeTranscript(entries: TranscriptEntry[], streaming: boole
       const toolBlock: Extract<TranscriptBlock, { type: "tool" }> = {
         type: "tool",
         ts: entry.ts,
-        name: displayToolName(entry.name, entry.input),
+        name: displayToolName(entry.name, entry.input, t),
         toolUseId: entry.toolUseId ?? extractToolUseId(entry.input),
         input: entry.input,
         status: "running",

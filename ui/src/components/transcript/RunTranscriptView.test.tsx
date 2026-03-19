@@ -6,6 +6,9 @@ import type { TranscriptEntry } from "../../adapters";
 import { ThemeProvider } from "../../context/ThemeContext";
 import { RunTranscriptView, normalizeTranscript } from "./RunTranscriptView";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockT = ((key: string) => key) as any;
+
 describe("RunTranscriptView", () => {
   it("keeps running command stdout inside the command fold instead of a standalone stdout block", () => {
     const entries: TranscriptEntry[] = [
@@ -23,7 +26,7 @@ describe("RunTranscriptView", () => {
       },
     ];
 
-    const blocks = normalizeTranscript(entries, false);
+    const blocks = normalizeTranscript(entries, false, mockT);
 
     expect(blocks).toHaveLength(1);
     expect(blocks[0]).toMatchObject({
@@ -72,7 +75,7 @@ describe("RunTranscriptView", () => {
       },
     ];
 
-    const blocks = normalizeTranscript(entries, false);
+    const blocks = normalizeTranscript(entries, false, mockT);
 
     expect(blocks).toHaveLength(1);
     expect(blocks[0]).toMatchObject({

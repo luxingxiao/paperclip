@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { UserPlus, Lightbulb, ShieldAlert, ShieldCheck } from "lucide-react";
 import { formatCents } from "../lib/utils";
 
@@ -26,24 +27,25 @@ function PayloadField({ label, value }: { label: string; value: unknown }) {
 }
 
 export function HireAgentPayload({ payload }: { payload: Record<string, unknown> }) {
+  const { t } = useTranslation();
   return (
     <div className="mt-3 space-y-1.5 text-sm">
       <div className="flex items-center gap-2">
-        <span className="text-muted-foreground w-20 sm:w-24 shrink-0 text-xs">Name</span>
+        <span className="text-muted-foreground w-20 sm:w-24 shrink-0 text-xs">{t("approvalPayload.name")}</span>
         <span className="font-medium">{String(payload.name ?? "—")}</span>
       </div>
-      <PayloadField label="Role" value={payload.role} />
-      <PayloadField label="Title" value={payload.title} />
-      <PayloadField label="Icon" value={payload.icon} />
+      <PayloadField label={t("approvalPayload.role")} value={payload.role} />
+      <PayloadField label={t("approvalPayload.title")} value={payload.title} />
+      <PayloadField label={t("approvalPayload.icon")} value={payload.icon} />
       {!!payload.capabilities && (
         <div className="flex items-start gap-2">
-          <span className="text-muted-foreground w-20 sm:w-24 shrink-0 text-xs pt-0.5">Capabilities</span>
+          <span className="text-muted-foreground w-20 sm:w-24 shrink-0 text-xs pt-0.5">{t("approvalPayload.capabilities")}</span>
           <span className="text-muted-foreground">{String(payload.capabilities)}</span>
         </div>
       )}
       {!!payload.adapterType && (
         <div className="flex items-center gap-2">
-          <span className="text-muted-foreground w-20 sm:w-24 shrink-0 text-xs">Adapter</span>
+          <span className="text-muted-foreground w-20 sm:w-24 shrink-0 text-xs">{t("approvalPayload.adapter")}</span>
           <span className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded">
             {String(payload.adapterType)}
           </span>
@@ -73,16 +75,17 @@ export function CeoStrategyPayload({ payload }: { payload: Record<string, unknow
 }
 
 export function BudgetOverridePayload({ payload }: { payload: Record<string, unknown> }) {
+  const { t } = useTranslation();
   const budgetAmount = typeof payload.budgetAmount === "number" ? payload.budgetAmount : null;
   const observedAmount = typeof payload.observedAmount === "number" ? payload.observedAmount : null;
   return (
     <div className="mt-3 space-y-1.5 text-sm">
-      <PayloadField label="Scope" value={payload.scopeName ?? payload.scopeType} />
-      <PayloadField label="Window" value={payload.windowKind} />
-      <PayloadField label="Metric" value={payload.metric} />
+      <PayloadField label={t("approvalPayload.scope")} value={payload.scopeName ?? payload.scopeType} />
+      <PayloadField label={t("approvalPayload.window")} value={payload.windowKind} />
+      <PayloadField label={t("approvalPayload.metric")} value={payload.metric} />
       {(budgetAmount !== null || observedAmount !== null) ? (
         <div className="rounded-md bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
-          Limit {budgetAmount !== null ? formatCents(budgetAmount) : "—"} · Observed {observedAmount !== null ? formatCents(observedAmount) : "—"}
+          {t("approvalPayload.limit")} {budgetAmount !== null ? formatCents(budgetAmount) : "—"} · {t("approvalPayload.observed")} {observedAmount !== null ? formatCents(observedAmount) : "—"}
         </div>
       ) : null}
       {!!payload.guidance && (

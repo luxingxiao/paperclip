@@ -207,7 +207,10 @@
     "adapterCursor": "Cursor",
     "adapterOpenclaw": "OpenClaw 网关",
     "adapterProcess": "进程",
-    "adapterHttp": "HTTP"
+    "adapterHttp": "HTTP",
+    "agentCount_one": "{{count}} 个智能体",
+    "agentCount_other": "{{count}} 个智能体",
+    "live": "实时"
   },
   "agentDetail": {
     "tabDashboard": "仪表盘",
@@ -1732,5 +1735,51 @@
     "fitToScreen": "适应屏幕",
     "fitChartToScreen": "让图表适应屏幕",
     "fit": "适应"
+  },
+  "agentProperties": {
+    "status": "状态",
+    "role": "角色",
+    "title": "头衔",
+    "adapter": "适配器",
+    "session": "会话",
+    "lastError": "最近错误",
+    "lastHeartbeat": "最近心跳",
+    "reportsTo": "汇报对象",
+    "created": "创建时间"
+  },
+  "processConfig": {
+    "command": "命令",
+    "commandPlaceholder": "例如：node, python",
+    "args": "参数（逗号分隔）",
+    "argsPlaceholder": "例如：script.js, --flag"
+  },
+  "companySwitcher": {
+    "selectCompany": "选择公司",
+    "companies": "公司",
+    "noCompanies": "暂无公司",
+    "companySettings": "公司设置",
+    "manageCompanies": "管理公司"
+  },
+  "approvalPayload": {
+    "name": "名称",
+    "role": "角色",
+    "title": "头衔",
+    "icon": "图标",
+    "capabilities": "能力",
+    "adapter": "适配器",
+    "scope": "范围",
+    "window": "窗口",
+    "metric": "指标",
+    "limit": "限额",
+    "observed": "已观察"
+  },
+  "goalProperties": {
+    "status": "状态",
+    "level": "层级",
+    "owner": "负责人",
+    "none": "无",
+    "parentGoal": "父目标",
+    "created": "创建时间",
+    "updated": "更新时间"
   }
 }

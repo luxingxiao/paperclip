@@ -207,7 +207,10 @@
     "adapterCursor": "Cursor",
     "adapterOpenclaw": "OpenClaw Gateway",
     "adapterProcess": "Process",
-    "adapterHttp": "HTTP"
+    "adapterHttp": "HTTP",
+    "agentCount_one": "{{count}} agent",
+    "agentCount_other": "{{count}} agents",
+    "live": "Live"
   },
   "agentDetail": {
     "tabDashboard": "Dashboard",
@@ -1731,5 +1734,51 @@
     "fitToScreen": "Fit to screen",
     "fitChartToScreen": "Fit chart to screen",
     "fit": "Fit"
+  },
+  "agentProperties": {
+    "status": "Status",
+    "role": "Role",
+    "title": "Title",
+    "adapter": "Adapter",
+    "session": "Session",
+    "lastError": "Last error",
+    "lastHeartbeat": "Last Heartbeat",
+    "reportsTo": "Reports To",
+    "created": "Created"
+  },
+  "processConfig": {
+    "command": "Command",
+    "commandPlaceholder": "e.g. node, python",
+    "args": "Args (comma-separated)",
+    "argsPlaceholder": "e.g. script.js, --flag"
+  },
+  "companySwitcher": {
+    "selectCompany": "Select company",
+    "companies": "Companies",
+    "noCompanies": "No companies",
+    "companySettings": "Company Settings",
+    "manageCompanies": "Manage Companies"
+  },
+  "approvalPayload": {
+    "name": "Name",
+    "role": "Role",
+    "title": "Title",
+    "icon": "Icon",
+    "capabilities": "Capabilities",
+    "adapter": "Adapter",
+    "scope": "Scope",
+    "window": "Window",
+    "metric": "Metric",
+    "limit": "Limit",
+    "observed": "Observed"
+  },
+  "goalProperties": {
+    "status": "Status",
+    "level": "Level",
+    "owner": "Owner",
+    "none": "None",
+    "parentGoal": "Parent Goal",
+    "created": "Created",
+    "updated": "Updated"
   }
 }
