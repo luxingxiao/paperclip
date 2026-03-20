@@ -125,9 +125,9 @@ export function ActivityRow({ event, agentMap, entityNameMap, entityTitleMap, cl
   const actor = event.actorType === "agent" ? agentMap.get(event.actorId) : null;
   const actorName = actor?.name
     ?? (event.actorType === "system"
-      ? t("agentDetail.actorSystem")
+      ? t("issueDetail.actorSystem")
       : event.actorType === "user"
-        ? t("agentDetail.actorBoard")
+        ? t("issueDetail.actorBoard")
         : event.actorId || t("activityRow.unknown"));
 
   const inner = (
