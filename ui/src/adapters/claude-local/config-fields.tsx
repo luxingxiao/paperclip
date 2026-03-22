@@ -23,35 +23,38 @@ export function ClaudeLocalConfigFields({
   eff,
   mark,
   models,
+  hideInstructionsFile,
 }: AdapterConfigFieldsProps) {
   const { t } = useTranslation();
 
   return (
     <>
-      <Field label={t("adapterConfigFields.agentInstructionsFile")} hint={t("adapterConfigFields.instructionsFileHintSystem")}>
-        <div className="flex items-center gap-2">
-          <DraftInput
-            value={
-              isCreate
-                ? values!.instructionsFilePath ?? ""
-                : eff(
-                    "adapterConfig",
-                    "instructionsFilePath",
-                    String(config.instructionsFilePath ?? ""),
-                  )
-            }
-            onCommit={(v) =>
-              isCreate
-                ? set!({ instructionsFilePath: v })
-                : mark("adapterConfig", "instructionsFilePath", v || undefined)
-            }
-            immediate
-            className={inputClass}
-            placeholder={t("adapterConfigFields.instructionsFilePathPlaceholder")}
-          />
-          <ChoosePathButton />
-        </div>
-      </Field>
+      {!hideInstructionsFile && (
+        <Field label={t("adapterConfigFields.agentInstructionsFile")} hint={t("adapterConfigFields.instructionsFileHintSystem")}>
+          <div className="flex items-center gap-2">
+            <DraftInput
+              value={
+                isCreate
+                  ? values!.instructionsFilePath ?? ""
+                  : eff(
+                      "adapterConfig",
+                      "instructionsFilePath",
+                      String(config.instructionsFilePath ?? ""),
+                    )
+              }
+              onCommit={(v) =>
+                isCreate
+                  ? set!({ instructionsFilePath: v })
+                  : mark("adapterConfig", "instructionsFilePath", v || undefined)
+              }
+              immediate
+              className={inputClass}
+              placeholder={t("adapterConfigFields.instructionsFilePathPlaceholder")}
+            />
+            <ChoosePathButton />
+          </div>
+        </Field>
+      )}
       <LocalWorkspaceRuntimeFields
         isCreate={isCreate}
         values={values}

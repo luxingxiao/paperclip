@@ -22,6 +22,7 @@ export function CodexLocalConfigFields({
   eff,
   mark,
   models,
+  hideInstructionsFile,
 }: AdapterConfigFieldsProps) {
   const { t } = useTranslation();
   const bypassEnabled =
@@ -29,30 +30,32 @@ export function CodexLocalConfigFields({
 
   return (
     <>
-      <Field label={t("adapterConfigFields.agentInstructionsFile")} hint={t("adapterConfigFields.instructionsFileHintSystem")}>
-        <div className="flex items-center gap-2">
-          <DraftInput
-            value={
-              isCreate
-                ? values!.instructionsFilePath ?? ""
-                : eff(
-                    "adapterConfig",
-                    "instructionsFilePath",
-                    String(config.instructionsFilePath ?? ""),
-                  )
-            }
-            onCommit={(v) =>
-              isCreate
-                ? set!({ instructionsFilePath: v })
-                : mark("adapterConfig", "instructionsFilePath", v || undefined)
-            }
-            immediate
-            className={inputClass}
-            placeholder={t("adapterConfigFields.instructionsFilePathPlaceholder")}
-          />
-          <ChoosePathButton />
-        </div>
-      </Field>
+      {!hideInstructionsFile && (
+        <Field label={t("adapterConfigFields.agentInstructionsFile")} hint={t("adapterConfigFields.instructionsFileHintSystem")}>
+          <div className="flex items-center gap-2">
+            <DraftInput
+              value={
+                isCreate
+                  ? values!.instructionsFilePath ?? ""
+                  : eff(
+                      "adapterConfig",
+                      "instructionsFilePath",
+                      String(config.instructionsFilePath ?? ""),
+                    )
+              }
+              onCommit={(v) =>
+                isCreate
+                  ? set!({ instructionsFilePath: v })
+                  : mark("adapterConfig", "instructionsFilePath", v || undefined)
+              }
+              immediate
+              className={inputClass}
+              placeholder={t("adapterConfigFields.instructionsFilePathPlaceholder")}
+            />
+            <ChoosePathButton />
+          </div>
+        </Field>
+      )}
       <ToggleField
         label={t("adapterConfigFields.bypassSandbox")}
         hint={help.dangerouslyBypassSandbox}

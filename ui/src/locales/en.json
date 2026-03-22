@@ -16,7 +16,8 @@
     "off": "Off",
     "copy": "Copy to clipboard",
     "copied": "Copied!",
-    "skipToMain": "Skip to Main Content"
+    "skipToMain": "Skip to Main Content",
+    "beta": "Beta"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -30,7 +31,9 @@
     "agents": "Agents",
     "projects": "Projects",
     "home": "Home",
-    "create": "Create"
+    "create": "Create",
+    "routines": "Routines",
+    "skills": "Skills"
   },
   "sidebar": {
     "selectCompany": "Select company",

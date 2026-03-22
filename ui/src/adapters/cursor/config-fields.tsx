@@ -16,9 +16,11 @@ export function CursorLocalConfigFields({
   config,
   eff,
   mark,
+  hideInstructionsFile,
 }: AdapterConfigFieldsProps) {
   const { t } = useTranslation();
 
+  if (hideInstructionsFile) return null;
   return (
     <Field label={t("adapterConfigFields.agentInstructionsFile")} hint={t("adapterConfigFields.instructionsFileHintPrompt")}>
       <div className="flex items-center gap-2">

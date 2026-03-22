@@ -16,9 +16,11 @@ export function OpenCodeLocalConfigFields({
   config,
   eff,
   mark,
+  hideInstructionsFile,
 }: AdapterConfigFieldsProps) {
   const { t } = useTranslation();
 
+  if (hideInstructionsFile) return null;
   return (
     <Field label={t("adapterConfigFields.agentInstructionsFile")} hint={t("adapterConfigFields.instructionsFileHintSystem")}>
       <div className="flex items-center gap-2">

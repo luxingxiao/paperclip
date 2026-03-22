@@ -8,6 +8,8 @@ import {
   Search,
   SquarePen,
   Network,
+  Boxes,
+  Repeat,
   Settings,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -99,6 +101,7 @@ export function Sidebar() {
 
         <SidebarSection label={t("sidebar.work")}>
           <SidebarNavItem to="/issues" label={t("nav.issues")} icon={CircleDot} />
+          <SidebarNavItem to="/routines" label={t("nav.routines")} icon={Repeat} textBadge={t("common.beta")} textBadgeTone="amber" />
           <SidebarNavItem to="/goals" label={t("nav.goals")} icon={Target} />
         </SidebarSection>
 
@@ -108,6 +111,7 @@ export function Sidebar() {
 
         <SidebarSection label={t("sidebar.company")}>
           <SidebarNavItem to="/org" label={t("nav.org")} icon={Network} />
+          <SidebarNavItem to="/skills" label={t("nav.skills")} icon={Boxes} />
           <SidebarNavItem to="/costs" label={t("nav.costs")} icon={DollarSign} />
           <SidebarNavItem to="/activity" label={t("nav.activity")} icon={History} />
           <SidebarNavItem to="/company/settings" label={t("nav.settings")} icon={Settings} />

@@ -12,6 +12,7 @@ import { useCompany } from "../context/CompanyContext";
 import { usePanel } from "../context/PanelContext";
 import { useToast } from "../context/ToastContext";
 import { useBreadcrumbs } from "../context/BreadcrumbContext";
+import { assigneeValueFromSelection, suggestedCommentAssigneeValue } from "../lib/assignees";
 import { queryKeys } from "../lib/queryKeys";
 import { readIssueDetailBreadcrumb } from "../lib/issueDetailBreadcrumb";
 import { useProjectOrder } from "../hooks/useProjectOrder";
@@ -48,6 +49,7 @@ import {
   MessageSquare,
   MoreHorizontal,
   Paperclip,
+  Repeat,
   SlidersHorizontal,
   Trash2,
 } from "lucide-react";
@@ -220,7 +222,6 @@ export function IssueDetail() {
   const [detailTab, setDetailTab] = useState("comments");
   const [secondaryOpen, setSecondaryOpen] = useState({
     approvals: false,
-    cost: false,
   });
   const [attachmentError, setAttachmentError] = useState<string | null>(null);
   const [attachmentDragActive, setAttachmentDragActive] = useState(false);
@@ -389,11 +390,15 @@ export function IssueDetail() {
     return options;
   }, [agents, currentUserId]);
 
-  const currentAssigneeValue = useMemo(() => {
-    if (issue?.assigneeAgentId) return `agent:${issue.assigneeAgentId}`;
-    if (issue?.assigneeUserId) return `user:${issue.assigneeUserId}`;
-    return "";
-  }, [issue?.assigneeAgentId, issue?.assigneeUserId]);
+  const actualAssigneeValue = useMemo(
+    () => assigneeValueFromSelection(issue ?? {}),
+    [issue],
+  );
+
+  const suggestedAssigneeValue = useMemo(
+    () => suggestedCommentAssigneeValue(issue ?? {}, comments, currentUserId),
+    [issue, comments, currentUserId],
+  );
 
   const commentsWithRunMeta = useMemo(() => {
     const runMetaByCommentId = new Map<string, { runId: string; runAgentId: string | null }>();
@@ -736,6 +741,16 @@ export function IssueDetail() {
             </span>
           )}
 
+          {issue.originKind === "routine_execution" && issue.originId && (
+            <Link
+              to={`/routines/${issue.originId}`}
+              className="inline-flex items-center gap-1 rounded-full bg-violet-500/10 border border-violet-500/30 px-2 py-0.5 text-[10px] font-medium text-violet-600 dark:text-violet-400 shrink-0 hover:bg-violet-500/20 transition-colors"
+            >
+              <Repeat className="h-3 w-3" />
+              Routine
+            </Link>
+          )}
+
           {issue.projectId ? (
             <Link
               to={`/projects/${issue.projectId}`}
@@ -1016,7 +1031,8 @@ export function IssueDetail() {
             draftKey={`paperclip:issue-comment-draft:${issue.id}`}
             enableReassign
             reassignOptions={commentReassignOptions}
-            currentAssigneeValue={currentAssigneeValue}
+            currentAssigneeValue={actualAssigneeValue}
+            suggestedAssigneeValue={suggestedAssigneeValue}
             mentions={mentionOptions}
             onAdd={async (body, reopen, reassignment) => {
               if (reassignment) {
@@ -1069,6 +1085,30 @@ export function IssueDetail() {
         </TabsContent>
 
         <TabsContent value="activity">
+          {linkedRuns && linkedRuns.length > 0 && (
+            <div className="mb-3 px-3 py-2 rounded-lg border border-border">
+              <div className="text-sm font-medium text-muted-foreground mb-1">Cost Summary</div>
+              {!issueCostSummary.hasCost && !issueCostSummary.hasTokens ? (
+                <div className="text-xs text-muted-foreground">No cost data yet.</div>
+              ) : (
+                <div className="flex flex-wrap gap-3 text-xs text-muted-foreground tabular-nums">
+                  {issueCostSummary.hasCost && (
+                    <span className="font-medium text-foreground">
+                      ${issueCostSummary.cost.toFixed(4)}
+                    </span>
+                  )}
+                  {issueCostSummary.hasTokens && (
+                    <span>
+                      Tokens {formatTokens(issueCostSummary.totalTokens)}
+                      {issueCostSummary.cached > 0
+                        ? ` (in ${formatTokens(issueCostSummary.input)}, out ${formatTokens(issueCostSummary.output)}, cached ${formatTokens(issueCostSummary.cached)})`
+                        : ` (in ${formatTokens(issueCostSummary.input)}, out ${formatTokens(issueCostSummary.output)})`}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
           {!activity || activity.length === 0 ? (
             <p className="text-xs text-muted-foreground">{t("issueDetail.noActivityItems")}</p>
           ) : (
@@ -1137,7 +1177,7 @@ export function IssueDetail() {
         </Collapsible>
       )}
 
-      {linkedRuns && linkedRuns.length > 0 && (
+{linkedRuns && linkedRuns.length > 0 && (
         <Collapsible
           open={secondaryOpen.cost}
           onOpenChange={(open) => setSecondaryOpen((prev) => ({ ...prev, cost: open }))}

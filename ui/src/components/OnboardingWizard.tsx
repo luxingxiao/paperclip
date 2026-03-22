@@ -33,8 +33,6 @@ import { DEFAULT_CURSOR_LOCAL_MODEL } from "@paperclipai/adapter-cursor-local";
 import { DEFAULT_GEMINI_LOCAL_MODEL } from "@paperclipai/adapter-gemini-local";
 import { resolveRouteOnboardingOptions } from "../lib/onboarding-route";
 import { AsciiArtAnimation } from "./AsciiArtAnimation";
-import { ChoosePathButton } from "./PathInstructionsModal";
-import { HintIcon } from "./agent-config-primitives";
 import { OpenCodeLogoIcon } from "./OpenCodeLogoIcon";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import {
@@ -51,7 +49,6 @@ import {
   MousePointer2,
   Check,
   Loader2,
-  FolderOpen,
   ChevronDown,
   X
 } from "lucide-react";
@@ -64,7 +61,6 @@ type AdapterType =
   | "opencode_local"
   | "pi_local"
   | "cursor"
-  | "process"
   | "http"
   | "openclaw_gateway";
 
@@ -110,7 +106,6 @@ export function OnboardingWizard() {
   // Step 2
   const [agentName, setAgentName] = useState("CEO");
   const [adapterType, setAdapterType] = useState<AdapterType>("claude_local");
-  const [cwd, setCwd] = useState("");
   const [model, setModel] = useState("");
   const [command, setCommand] = useState("");
   const [args, setArgs] = useState("");
@@ -212,7 +207,7 @@ export function OnboardingWizard() {
     if (step !== 2) return;
     setAdapterEnvResult(null);
     setAdapterEnvError(null);
-  }, [step, adapterType, cwd, model, command, args, url]);
+  }, [step, adapterType, model, command, args, url]);
 
   const selectedModel = (adapterModels ?? []).find((m) => m.id === model);
   const hasAnthropicApiKeyOverrideCheck =
@@ -268,7 +263,6 @@ export function OnboardingWizard() {
     setCompanyGoal("");
     setAgentName("CEO");
     setAdapterType("claude_local");
-    setCwd("");
     setModel("");
     setCommand("");
     setArgs("");
@@ -313,7 +307,6 @@ export function OnboardingWizard() {
     const config = adapter.buildAdapterConfig({
       ...defaultCreateValues,
       adapterType,
-      cwd,
       model:
         adapterType === "codex_local"
           ? model || DEFAULT_CODEX_LOCAL_MODEL
@@ -798,12 +791,6 @@ export function OnboardingWizard() {
                             desc: t("onboarding.adapterDescGemini")
                           },
                           {
-                            value: "process" as const,
-                            label: "Process",
-                            icon: Terminal,
-                            desc: "Run a local command"
-                          },
-                          {
                             value: "opencode_local" as const,
                             label: "OpenCode",
                             icon: OpenCodeLogoIcon,
@@ -884,24 +871,6 @@ export function OnboardingWizard() {
                     adapterType === "pi_local" ||
                     adapterType === "cursor") && (
                     <div className="space-y-3">
-                      <div>
-                        <div className="flex items-center gap-1.5 mb-1">
-                          <label className="text-xs text-muted-foreground">
-                            {t("onboarding.workingDirectory")}
-                          </label>
-                          <HintIcon text={t("onboarding.workingDirectoryHint")} />
-                        </div>
-                        <div className="flex items-center gap-2 rounded-md border border-border px-2.5 py-1.5">
-                          <FolderOpen className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                          <input
-                            className="w-full bg-transparent outline-none text-sm font-mono placeholder:text-muted-foreground/50"
-                            placeholder={t("onboarding.workingDirectoryPlaceholder")}
-                            value={cwd}
-                            onChange={(e) => setCwd(e.target.value)}
-                          />
-                          <ChoosePathButton />
-                        </div>
-                      </div>
                       <div>
                         <label className="text-xs text-muted-foreground mb-1 block">
                           {t("onboarding.model")}
@@ -1108,33 +1077,6 @@ export function OnboardingWizard() {
                           )}
                         </div>
                       )}
-                    </div>
-                  )}
-
-                  {adapterType === "process" && (
-                    <div className="space-y-3">
-                      <div>
-                        <label className="text-xs text-muted-foreground mb-1 block">
-                          {t("onboarding.processCommand")}
-                        </label>
-                        <input
-                          className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm font-mono outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/50"
-                          placeholder={t("onboarding.processCommandPlaceholder")}
-                          value={command}
-                          onChange={(e) => setCommand(e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs text-muted-foreground mb-1 block">
-                          {t("onboarding.processArgs")}
-                        </label>
-                        <input
-                          className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm font-mono outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/50"
-                          placeholder={t("onboarding.processArgsPlaceholder")}
-                          value={args}
-                          onChange={(e) => setArgs(e.target.value)}
-                        />
-                      </div>
                     </div>
                   )}
 
