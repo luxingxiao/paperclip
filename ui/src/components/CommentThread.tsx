@@ -446,7 +446,6 @@ export function CommentThread({
               </Button>
             </div>
           )}
-{issueStatus === "done" || issueStatus === "cancelled" ? (
             <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer select-none">
               <input
                 type="checkbox"
@@ -456,7 +455,6 @@ export function CommentThread({
               />
               {t("commentThread.reopen")}
             </label>
-          ) : null}
           {enableReassign && reassignOptions.length > 0 && (
             <InlineEntitySelector
               value={reassignTarget}
