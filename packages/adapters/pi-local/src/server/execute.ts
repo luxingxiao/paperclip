@@ -20,9 +20,6 @@ import {
   removeMaintainerOnlySkillSymlinks,
   renderTemplate,
   runChildProcess,
-  // BEGIN PR #800: Import wake comment helper
-  appendWakeCommentToPrompt,
-  // END PR #800
 } from "@paperclipai/adapter-utils/server-utils";
 import { isPiUnknownSessionError, parsePiJsonl } from "./parse.js";
 import { ensurePiModelConfiguredAndAvailable } from "./models.js";
@@ -304,16 +301,11 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
       ? renderTemplate(bootstrapPromptTemplate, templateData).trim()
       : "";
   const sessionHandoffNote = asString(context.paperclipSessionHandoffMarkdown, "").trim();
-  // BEGIN PR #800: Append wake comment body to prompt
-  const userPrompt = appendWakeCommentToPrompt(
-    joinPromptSections([
-      renderedBootstrapPrompt,
-      sessionHandoffNote,
-      renderedHeartbeatPrompt,
-    ]),
-    context,
-  );
-  // END PR #800
+  const userPrompt = joinPromptSections([
+    renderedBootstrapPrompt,
+    sessionHandoffNote,
+    renderedHeartbeatPrompt,
+  ]);
   const promptMetrics = {
     systemPromptChars: renderedSystemPromptExtension.length,
     promptChars: userPrompt.length,

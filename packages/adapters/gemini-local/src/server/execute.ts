@@ -22,9 +22,6 @@ import {
   redactEnvForLogs,
   renderTemplate,
   runChildProcess,
-  // BEGIN PR #800: Import wake comment helper
-  appendWakeCommentToPrompt,
-  // END PR #800
 } from "@paperclipai/adapter-utils/server-utils";
 import { DEFAULT_GEMINI_LOCAL_MODEL } from "../index.js";
 import {
@@ -303,19 +300,14 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
   const sessionHandoffNote = asString(context.paperclipSessionHandoffMarkdown, "").trim();
   const paperclipEnvNote = renderPaperclipEnvNote(env);
   const apiAccessNote = renderApiAccessNote(env);
-  // BEGIN PR #800: Append wake comment body to prompt
-  const prompt = appendWakeCommentToPrompt(
-    joinPromptSections([
-      instructionsPrefix,
-      renderedBootstrapPrompt,
-      sessionHandoffNote,
-      paperclipEnvNote,
-      apiAccessNote,
-      renderedPrompt,
-    ]),
-    context,
-  );
-  // END PR #800
+  const prompt = joinPromptSections([
+    instructionsPrefix,
+    renderedBootstrapPrompt,
+    sessionHandoffNote,
+    paperclipEnvNote,
+    apiAccessNote,
+    renderedPrompt,
+  ]);
   const promptMetrics = {
     promptChars: prompt.length,
     instructionsChars: instructionsPrefix.length,

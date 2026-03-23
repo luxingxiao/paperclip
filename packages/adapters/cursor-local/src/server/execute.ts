@@ -20,9 +20,6 @@ import {
   renderTemplate,
   joinPromptSections,
   runChildProcess,
-  // BEGIN PR #800: Import wake comment helper
-  appendWakeCommentToPrompt,
-  // END PR #800
 } from "@paperclipai/adapter-utils/server-utils";
 import { DEFAULT_CURSOR_LOCAL_MODEL } from "../index.js";
 import { parseCursorJsonl, isCursorUnknownSessionError } from "./parse.js";
@@ -359,18 +356,13 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
       : "";
   const sessionHandoffNote = asString(context.paperclipSessionHandoffMarkdown, "").trim();
   const paperclipEnvNote = renderPaperclipEnvNote(env);
-  // BEGIN PR #800: Append wake comment body to prompt
-  const prompt = appendWakeCommentToPrompt(
-    joinPromptSections([
-      instructionsPrefix,
-      renderedBootstrapPrompt,
-      sessionHandoffNote,
-      paperclipEnvNote,
-      renderedPrompt,
-    ]),
-    context,
-  );
-  // END PR #800
+  const prompt = joinPromptSections([
+    instructionsPrefix,
+    renderedBootstrapPrompt,
+    sessionHandoffNote,
+    paperclipEnvNote,
+    renderedPrompt,
+  ]);
   const promptMetrics = {
     promptChars: prompt.length,
     instructionsChars,

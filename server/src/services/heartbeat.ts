@@ -532,24 +532,6 @@ function deriveCommentId(
   );
 }
 
-// BEGIN PR #800: Derive wake comment body for prompt injection
-function deriveWakeCommentBody(
-  contextSnapshot: Record<string, unknown> | null | undefined,
-  payload: Record<string, unknown> | null | undefined,
-): string | null {
-  const body =
-    readNonEmptyString(contextSnapshot?.wakeCommentBody) ??
-    readNonEmptyString(contextSnapshot?.commentBody) ??
-    readNonEmptyString(payload?.commentBody) ??
-    null;
-  // Truncate to avoid excessively long prompts
-  if (body && body.length > 8000) {
-    return body.slice(0, 8000);
-  }
-  return body;
-}
-// END PR #800
-
 function enrichWakeContextSnapshot(input: {
   contextSnapshot: Record<string, unknown>;
   reason: string | null;
@@ -562,9 +544,6 @@ function enrichWakeContextSnapshot(input: {
   const commentIdFromPayload = readNonEmptyString(payload?.["commentId"]);
   const taskKey = deriveTaskKey(contextSnapshot, payload);
   const wakeCommentId = deriveCommentId(contextSnapshot, payload);
-  // BEGIN PR #800: Derive wake comment body
-  const wakeCommentBody = deriveWakeCommentBody(contextSnapshot, payload);
-  // END PR #800
 
   if (!readNonEmptyString(contextSnapshot["wakeReason"]) && reason) {
     contextSnapshot.wakeReason = reason;
@@ -584,11 +563,6 @@ function enrichWakeContextSnapshot(input: {
   if (!readNonEmptyString(contextSnapshot["wakeCommentId"]) && wakeCommentId) {
     contextSnapshot.wakeCommentId = wakeCommentId;
   }
-  // BEGIN PR #800: Propagate wake comment body
-  if (!readNonEmptyString(contextSnapshot["wakeCommentBody"]) && wakeCommentBody) {
-    contextSnapshot.wakeCommentBody = wakeCommentBody;
-  }
-  // END PR #800
   if (!readNonEmptyString(contextSnapshot["wakeSource"]) && source) {
     contextSnapshot.wakeSource = source;
   }
@@ -602,9 +576,6 @@ function enrichWakeContextSnapshot(input: {
     commentIdFromPayload,
     taskKey,
     wakeCommentId,
-    // BEGIN PR #800: Return wake comment body
-    wakeCommentBody,
-    // END PR #800
   };
 }
 
@@ -622,12 +593,6 @@ function mergeCoalescedContextSnapshot(
     merged.commentId = commentId;
     merged.wakeCommentId = commentId;
   }
-  // BEGIN PR #800: Also propagate wake comment body when coalescing
-  const wakeCommentBody = deriveWakeCommentBody(incoming, null);
-  if (wakeCommentBody) {
-    merged.wakeCommentBody = wakeCommentBody;
-  }
-  // END PR #800
   return merged;
 }
 

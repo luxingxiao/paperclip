@@ -20,9 +20,6 @@ import {
   ensurePathInEnv,
   renderTemplate,
   runChildProcess,
-  // BEGIN PR #800: Import wake comment helper
-  appendWakeCommentToPrompt,
-  // END PR #800
 } from "@paperclipai/adapter-utils/server-utils";
 import {
   parseClaudeStreamJson,
@@ -395,16 +392,11 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
       ? renderTemplate(bootstrapPromptTemplate, templateData).trim()
       : "";
   const sessionHandoffNote = asString(context.paperclipSessionHandoffMarkdown, "").trim();
-  // BEGIN PR #800: Append wake comment body to prompt
-  const prompt = appendWakeCommentToPrompt(
-    joinPromptSections([
-      renderedBootstrapPrompt,
-      sessionHandoffNote,
-      renderedPrompt,
-    ]),
-    context,
-  );
-  // END PR #800
+  const prompt = joinPromptSections([
+    renderedBootstrapPrompt,
+    sessionHandoffNote,
+    renderedPrompt,
+  ]);
   const promptMetrics = {
     promptChars: prompt.length,
     bootstrapPromptChars: renderedBootstrapPrompt.length,
