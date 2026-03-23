@@ -17,7 +17,8 @@
     "copy": "Copy to clipboard",
     "copied": "Copied!",
     "skipToMain": "Skip to Main Content",
-    "beta": "Beta"
+    "beta": "Beta",
+    "detail": "Detail"
   },
   "nav": {
     "dashboard": "Dashboard",

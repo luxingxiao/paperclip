@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import type {
   CompanyPortabilityFileEntry,
   CompanyPortabilityExportPreviewResult,

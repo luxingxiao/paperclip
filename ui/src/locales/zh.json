@@ -17,7 +17,8 @@
     "copy": "复制到剪贴板",
     "copied": "已复制！",
     "skipToMain": "跳转到主要内容",
-    "beta": "测试版"
+    "beta": "测试版",
+    "detail": "详情"
   },
   "nav": {
     "dashboard": "仪表盘",
