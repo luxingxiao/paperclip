@@ -50,6 +50,7 @@ import { ClaudeLocalAdvancedFields } from "../adapters/claude-local/config-field
 import { MarkdownEditor } from "./MarkdownEditor";
 import { ChoosePathButton } from "./PathInstructionsModal";
 import { OpenCodeLogoIcon } from "./OpenCodeLogoIcon";
+import { ReportsToPicker } from "./ReportsToPicker";
 import { shouldShowLegacyWorkingDirectoryField } from "../lib/legacy-agent-config";
 
 /* ---- Create mode values ---- */
@@ -345,6 +346,12 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
   });
   const models = fetchedModels ?? externalModels ?? [];
 
+  const { data: companyAgents = [] } = useQuery({
+    queryKey: selectedCompanyId ? queryKeys.agents.list(selectedCompanyId) : ["agents", "none", "list"],
+    queryFn: () => agentsApi.list(selectedCompanyId!),
+    enabled: Boolean(!isCreate && selectedCompanyId),
+  });
+
   /** Props passed to adapter-specific config field components */
   const adapterFieldProps = {
     mode,
@@ -490,6 +497,15 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                 immediate
                 className={inputClass}
                 placeholder={t("agentConfigForm.titlePlaceholder")}
+              />
+            </Field>
+            <Field label="Reports to" hint={help.reportsTo}>
+              <ReportsToPicker
+                agents={companyAgents}
+                value={eff("identity", "reportsTo", props.agent.reportsTo ?? null)}
+                onChange={(id) => mark("identity", "reportsTo", id)}
+                excludeAgentIds={[props.agent.id]}
+                chooseLabel="Choose manager…"
               />
             </Field>
             <Field label={t("agentConfigForm.capabilities")} hint={help.capabilities}>

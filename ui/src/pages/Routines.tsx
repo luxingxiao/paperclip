@@ -583,6 +583,7 @@ export function Routines() {
                           <button
                             type="button"
                             role="switch"
+                            data-slot="toggle"
                             aria-checked={enabled}
                             aria-label={enabled ? t("routines.disable") : t("routines.enable")}
                             disabled={isStatusPending || isArchived}
