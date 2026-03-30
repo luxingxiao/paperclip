@@ -1550,7 +1550,7 @@ function ModelDropdown({
           <div className="relative mb-1">
             <input
               className="w-full px-2 py-1.5 pr-6 text-xs bg-transparent outline-none border-b border-border placeholder:text-muted-foreground/50"
-              placeholder={creatable ? "Search models... (type to create)" : {t("agentConfigForm.searchModels")}}
+              placeholder={creatable ? t("agentConfigForm.searchModelsCreatable") : t("agentConfigForm.searchModels")}
               value={modelSearch}
               onChange={(e) => setModelSearch(e.target.value)}
               autoFocus
@@ -1598,7 +1598,7 @@ function ModelDropdown({
                 {value}
               </span>
               <span className="shrink-0 ml-auto text-[9px] font-medium px-1.5 py-0.5 rounded-full bg-green-500/15 text-green-400 border border-green-500/20">
-                current
+                {t("agentConfigForm.current")}
               </span>
             </button>
           )}

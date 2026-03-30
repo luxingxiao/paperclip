@@ -26,7 +26,7 @@ describe("RunTranscriptView", () => {
       },
     ];
 
-    const blocks = normalizeTranscript(entries, false, mockT);
+    const blocks = normalizeTranscript(entries, false);
 
     expect(blocks).toHaveLength(1);
     expect(blocks[0]).toMatchObject({
@@ -75,7 +75,7 @@ describe("RunTranscriptView", () => {
       },
     ];
 
-    const blocks = normalizeTranscript(entries, false, mockT);
+    const blocks = normalizeTranscript(entries, false);
 
     expect(blocks).toHaveLength(1);
     expect(blocks[0]).toMatchObject({

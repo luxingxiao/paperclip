@@ -263,8 +263,8 @@ function isCommandTool(name: string, input: unknown): boolean {
   return Boolean(record && (typeof record.command === "string" || typeof record.cmd === "string"));
 }
 
-function displayToolName(name: string, input: unknown, t: TFunction): string {
-  if (isCommandTool(name, input)) return t("runTranscript.executingCommand");
+function displayToolName(name: string, input: unknown): string {
+  if (isCommandTool(name, input)) return "Executing command";
   return humanizeLabel(name);
 }
 
@@ -391,49 +391,7 @@ function groupToolBlocks(blocks: TranscriptBlock[]): TranscriptBlock[] {
   return grouped;
 }
 
-/** Group consecutive non-command tool blocks into a single tool_group accordion. */
-function groupToolBlocks(blocks: TranscriptBlock[]): TranscriptBlock[] {
-  const grouped: TranscriptBlock[] = [];
-  let pending: Array<Extract<TranscriptBlock, { type: "tool_group" }>["items"][number]> = [];
-  let groupTs: string | null = null;
-  let groupEndTs: string | undefined;
-
-  const flush = () => {
-    if (pending.length === 0 || !groupTs) return;
-    grouped.push({
-      type: "tool_group",
-      ts: groupTs,
-      endTs: groupEndTs,
-      items: pending,
-    });
-    pending = [];
-    groupTs = null;
-    groupEndTs = undefined;
-  };
-
-  for (const block of blocks) {
-    if (block.type === "tool" && !isCommandTool(block.name, block.input)) {
-      if (!groupTs) groupTs = block.ts;
-      groupEndTs = block.endTs ?? block.ts;
-      pending.push({
-        ts: block.ts,
-        endTs: block.endTs,
-        name: block.name,
-        input: block.input,
-        result: block.result,
-        isError: block.isError,
-        status: block.status,
-      });
-      continue;
-    }
-    flush();
-    grouped.push(block);
-  }
-  flush();
-  return grouped;
-}
-
-export function normalizeTranscript(entries: TranscriptEntry[], streaming: boolean, t: TFunction): TranscriptBlock[] {
+export function normalizeTranscript(entries: TranscriptEntry[], streaming: boolean): TranscriptBlock[] {
   const blocks: TranscriptBlock[] = [];
   const pendingToolBlocks = new Map<string, Extract<TranscriptBlock, { type: "tool" }>>();
   const pendingActivityBlocks = new Map<string, Extract<TranscriptBlock, { type: "activity" }>>();
@@ -480,7 +438,7 @@ export function normalizeTranscript(entries: TranscriptEntry[], streaming: boole
       const toolBlock: Extract<TranscriptBlock, { type: "tool" }> = {
         type: "tool",
         ts: entry.ts,
-        name: displayToolName(entry.name, entry.input, t),
+        name: displayToolName(entry.name, entry.input),
         toolUseId: entry.toolUseId ?? extractToolUseId(entry.input),
         input: entry.input,
         status: "running",
@@ -536,7 +494,7 @@ export function normalizeTranscript(entries: TranscriptEntry[], streaming: boole
         ts: entry.ts,
         label: "result",
         tone: entry.isError ? "error" : "info",
-        text: entry.text.trim() || entry.errors[0] || (entry.isError ? t("runTranscript.runFailed") : t("runTranscript.completed")),
+        text: entry.text.trim() || entry.errors[0] || (entry.isError ? "Run failed" : "Completed"),
       });
       continue;
     }
@@ -741,7 +699,7 @@ function TranscriptToolCard({
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-              {displayToolName(block.name, block.input, t)}
+              {block.name}
             </span>
             <span className={cn("text-[10px] font-semibold uppercase tracking-[0.14em]", statusTone)}>
               {statusLabel}
@@ -1253,20 +1211,18 @@ export function RunTranscriptView({
   limit,
   streaming = false,
   collapseStdout = false,
-  emptyMessage,
+  emptyMessage = "No transcript yet.",
   className,
   thinkingClassName,
 }: RunTranscriptViewProps) {
-  const { t } = useTranslation();
-  const resolvedEmptyMessage = emptyMessage ?? t("runTranscript.noTranscriptYet");
-  const blocks = useMemo(() => normalizeTranscript(entries, streaming, t), [entries, streaming, t]);
+  const blocks = useMemo(() => normalizeTranscript(entries, streaming), [entries, streaming]);
   const visibleBlocks = limit ? blocks.slice(-limit) : blocks;
   const visibleEntries = limit ? entries.slice(-limit) : entries;
 
   if (entries.length === 0) {
     return (
       <div className={cn("rounded-2xl border border-dashed border-border/70 bg-background/40 p-4 text-sm text-muted-foreground", className)}>
-        {resolvedEmptyMessage}
+        {emptyMessage}
       </div>
     );
   }
