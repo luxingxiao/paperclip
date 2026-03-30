@@ -71,7 +71,7 @@ const ADVANCED_ADAPTER_OPTIONS: Array<{
     value: "hermes_local",
     label: "Hermes Agent",
     icon: HermesIcon,
-    descKey: "Local multi-provider agent",
+    descKey: "adapterHermesDesc",
   },
   {
     value: "pi_local",
