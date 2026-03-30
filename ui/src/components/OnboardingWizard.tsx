@@ -58,12 +58,14 @@ import {
   ChevronDown,
   X
 } from "lucide-react";
+import { HermesIcon } from "./HermesIcon";
 
 type Step = 1 | 2 | 3 | 4;
 type AdapterType =
   | "claude_local"
   | "codex_local"
   | "gemini_local"
+  | "hermes_local"
   | "opencode_local"
   | "pi_local"
   | "cursor"
@@ -203,6 +205,7 @@ export function OnboardingWizard() {
     adapterType === "claude_local" ||
     adapterType === "codex_local" ||
     adapterType === "gemini_local" ||
+    adapterType === "hermes_local" ||
     adapterType === "opencode_local" ||
     adapterType === "pi_local" ||
     adapterType === "cursor";
@@ -212,6 +215,8 @@ export function OnboardingWizard() {
       ? "codex"
       : adapterType === "gemini_local"
         ? "gemini"
+      : adapterType === "hermes_local"
+        ? "hermes"
       : adapterType === "pi_local"
       ? "pi"
       : adapterType === "cursor"
@@ -337,7 +342,8 @@ export function OnboardingWizard() {
       command,
       args,
       url,
-      dangerouslySkipPermissions: adapterType === "claude_local",
+      dangerouslySkipPermissions:
+        adapterType === "claude_local" || adapterType === "opencode_local",
       dangerouslyBypassSandbox:
         adapterType === "codex_local"
           ? DEFAULT_CODEX_LOCAL_BYPASS_APPROVALS_AND_SANDBOX
@@ -853,6 +859,12 @@ export function OnboardingWizard() {
                             desc: t("onboarding.adapterDescCursor")
                           },
                           {
+                            value: "hermes_local" as const,
+                            label: "Hermes Agent",
+                            icon: HermesIcon,
+                            desc: "Local multi-provider agent"
+                          },
+                          {
                             value: "openclaw_gateway" as const,
                             label: "OpenClaw Gateway",
                             icon: Bot,
@@ -911,6 +923,7 @@ export function OnboardingWizard() {
                   {(adapterType === "claude_local" ||
                     adapterType === "codex_local" ||
                     adapterType === "gemini_local" ||
+                    adapterType === "hermes_local" ||
                     adapterType === "opencode_local" ||
                     adapterType === "pi_local" ||
                     adapterType === "cursor") && (

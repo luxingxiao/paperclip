@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { pickTextColorForPillBg } from "@/lib/color-contrast";
 import { Link } from "@/lib/router";
 import type { Issue } from "@paperclipai/shared";
@@ -6,8 +6,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { agentsApi } from "../api/agents";
 import { authApi } from "../api/auth";
-import { executionWorkspacesApi } from "../api/execution-workspaces";
-import { instanceSettingsApi } from "../api/instanceSettings";
 import { issuesApi } from "../api/issues";
 import { projectsApi } from "../api/projects";
 import { useCompany } from "../context/CompanyContext";
@@ -22,14 +20,8 @@ import { formatDate, cn, projectUrl } from "../lib/utils";
 import { timeAgo } from "../lib/timeAgo";
 import { Separator } from "@/components/ui/separator";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { User, Hexagon, ArrowUpRight, Tag, Plus, Trash2, Copy, Check } from "lucide-react";
+import { User, Hexagon, ArrowUpRight, Tag, Plus, Trash2 } from "lucide-react";
 import { AgentIcon } from "./AgentIconPicker";
-
-const EXECUTION_WORKSPACE_OPTIONS = [
-  { value: "shared_workspace", label: "Project default" },
-  { value: "isolated_workspace", label: "New isolated workspace" },
-  { value: "reuse_existing", label: "Reuse existing workspace" },
-] as const;
 
 function defaultProjectWorkspaceIdForProject(project: {
   workspaces?: Array<{ id: string; isPrimary: boolean }>;
@@ -47,23 +39,6 @@ function defaultExecutionWorkspaceModeForProject(project: { executionWorkspacePo
   if (defaultMode === "isolated_workspace" || defaultMode === "operator_branch") return defaultMode;
   if (defaultMode === "adapter_default") return "agent_default";
   return "shared_workspace";
-}
-
-function issueModeForExistingWorkspace(mode: string | null | undefined) {
-  if (mode === "isolated_workspace" || mode === "operator_branch" || mode === "shared_workspace") return mode;
-  if (mode === "adapter_managed" || mode === "cloud_sandbox") return "agent_default";
-  return "shared_workspace";
-}
-
-function shouldPresentExistingWorkspaceSelection(issue: Issue) {
-  const persistedMode =
-    issue.currentExecutionWorkspace?.mode
-    ?? issue.executionWorkspaceSettings?.mode
-    ?? issue.executionWorkspacePreference;
-  return Boolean(
-    issue.executionWorkspaceId &&
-    (persistedMode === "isolated_workspace" || persistedMode === "operator_branch"),
-  );
 }
 
 interface IssuePropertiesProps {
@@ -205,10 +180,6 @@ export function IssueProperties({ issue, onUpdate, inline }: IssuePropertiesProp
     queryKey: queryKeys.auth.session,
     queryFn: () => authApi.getSession(),
   });
-  const { data: experimentalSettings } = useQuery({
-    queryKey: queryKeys.instance.experimentalSettings,
-    queryFn: () => instanceSettingsApi.getExperimental(),
-  });
   const currentUserId = session?.user?.id ?? session?.session?.userId;
 
   const { data: agents } = useQuery({
@@ -278,48 +249,6 @@ export function IssueProperties({ issue, onUpdate, inline }: IssuePropertiesProp
   const currentProject = issue.projectId
     ? orderedProjects.find((project) => project.id === issue.projectId) ?? null
     : null;
-  const currentProjectExecutionWorkspacePolicy =
-    experimentalSettings?.enableIsolatedWorkspaces === true
-      ? currentProject?.executionWorkspacePolicy ?? null
-      : null;
-  const currentProjectSupportsExecutionWorkspace = Boolean(currentProjectExecutionWorkspacePolicy?.enabled);
-  const { data: reusableExecutionWorkspaces } = useQuery({
-    queryKey: queryKeys.executionWorkspaces.list(companyId!, {
-      projectId: issue.projectId ?? undefined,
-      projectWorkspaceId: issue.projectWorkspaceId ?? undefined,
-      reuseEligible: true,
-    }),
-    queryFn: () =>
-      executionWorkspacesApi.list(companyId!, {
-        projectId: issue.projectId ?? undefined,
-        projectWorkspaceId: issue.projectWorkspaceId ?? undefined,
-        reuseEligible: true,
-      }),
-    enabled: Boolean(companyId) && Boolean(issue.projectId),
-  });
-  const deduplicatedReusableWorkspaces = useMemo(() => {
-    const workspaces = reusableExecutionWorkspaces ?? [];
-    const seen = new Map<string, typeof workspaces[number]>();
-    for (const ws of workspaces) {
-      const key = ws.cwd ?? ws.id;
-      const existing = seen.get(key);
-      if (!existing || new Date(ws.lastUsedAt) > new Date(existing.lastUsedAt)) {
-        seen.set(key, ws);
-      }
-    }
-    return Array.from(seen.values());
-  }, [reusableExecutionWorkspaces]);
-  const selectedReusableExecutionWorkspace =
-    deduplicatedReusableWorkspaces.find((workspace) => workspace.id === issue.executionWorkspaceId)
-    ?? issue.currentExecutionWorkspace
-    ?? null;
-  const currentExecutionWorkspaceSelection = shouldPresentExistingWorkspaceSelection(issue)
-    ? "reuse_existing"
-    : (
-        issue.executionWorkspacePreference
-        ?? issue.executionWorkspaceSettings?.mode
-        ?? defaultExecutionWorkspaceModeForProject(currentProject)
-      );
   const projectLink = (id: string | null) => {
     if (!id) return null;
     const project = projects?.find((p) => p.id === id) ?? null;
