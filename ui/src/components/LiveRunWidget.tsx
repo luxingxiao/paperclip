@@ -7,8 +7,8 @@ import { queryKeys } from "../lib/queryKeys";
 import { formatDateTime } from "../lib/utils";
 import { ExternalLink, Square } from "lucide-react";
 import { Identity } from "./Identity";
+import { RunChatSurface } from "./RunChatSurface";
 import { StatusBadge } from "./StatusBadge";
-import { RunTranscriptView } from "./transcript/RunTranscriptView";
 import { useLiveRunTranscripts } from "./transcript/useLiveRunTranscripts";
 
 interface LiveRunWidgetProps {
@@ -144,13 +144,11 @@ export function LiveRunWidget({ issueId, companyId }: LiveRunWidgetProps) {
               </div>
 
               <div className="max-h-[320px] overflow-y-auto pr-1">
-                <RunTranscriptView
-                  entries={transcript}
-                  density="compact"
-                  limit={8}
-                  streaming={isActive}
-                  collapseStdout
-                  emptyMessage={hasOutputForRun(run.id) ? t("activeAgentsPanel.waitingTranscript") : t("liveRunWidget.waitingRunOutput")}
+                <RunChatSurface
+                  run={run}
+                  transcript={transcript}
+                  hasOutput={hasOutputForRun(run.id)}
+                  companyId={companyId}
                 />
               </div>
             </section>

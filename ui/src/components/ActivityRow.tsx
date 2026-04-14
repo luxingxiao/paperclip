@@ -3,86 +3,8 @@ import { useTranslation } from "react-i18next";
 import { Identity } from "./Identity";
 import { timeAgo } from "../lib/timeAgo";
 import { cn } from "../lib/utils";
+import { formatActivityVerb } from "../lib/activity-format";
 import { deriveProjectUrlKey, type ActivityEvent, type Agent } from "@paperclipai/shared";
-
-const ACTION_VERB_KEYS: Record<string, string> = {
-  "issue.created": "activityRow.issueCreated",
-  "issue.updated": "activityRow.issueUpdated",
-  "issue.checked_out": "activityRow.issueCheckedOut",
-  "issue.released": "activityRow.issueReleased",
-  "issue.comment_added": "activityRow.issueCommentAdded",
-  "issue.attachment_added": "activityRow.issueAttachmentAdded",
-  "issue.attachment_removed": "activityRow.issueAttachmentRemoved",
-  "issue.document_created": "activityRow.issueDocumentCreated",
-  "issue.document_updated": "activityRow.issueDocumentUpdated",
-  "issue.document_deleted": "activityRow.issueDocumentDeleted",
-  "issue.commented": "activityRow.issueCommented",
-  "issue.deleted": "activityRow.issueDeleted",
-  "agent.created": "activityRow.agentCreated",
-  "agent.updated": "activityRow.agentUpdated",
-  "agent.paused": "activityRow.agentPaused",
-  "agent.resumed": "activityRow.agentResumed",
-  "agent.terminated": "activityRow.agentTerminated",
-  "agent.key_created": "activityRow.agentKeyCreated",
-  "agent.budget_updated": "activityRow.agentBudgetUpdated",
-  "agent.runtime_session_reset": "activityRow.agentRuntimeSessionReset",
-  "heartbeat.invoked": "activityRow.heartbeatInvoked",
-  "heartbeat.cancelled": "activityRow.heartbeatCancelled",
-  "approval.created": "activityRow.approvalCreated",
-  "approval.approved": "activityRow.approvalApproved",
-  "approval.rejected": "activityRow.approvalRejected",
-  "project.created": "activityRow.projectCreated",
-  "project.updated": "activityRow.projectUpdated",
-  "project.deleted": "activityRow.projectDeleted",
-  "goal.created": "activityRow.goalCreated",
-  "goal.updated": "activityRow.goalUpdated",
-  "goal.deleted": "activityRow.goalDeleted",
-  "cost.reported": "activityRow.costReported",
-  "cost.recorded": "activityRow.costRecorded",
-  "company.created": "activityRow.companyCreated",
-  "company.updated": "activityRow.companyUpdated",
-  "company.archived": "activityRow.companyArchived",
-  "company.budget_updated": "activityRow.companyBudgetUpdated",
-};
-
-function humanizeValue(value: unknown, noneLabel: string): string {
-  if (typeof value !== "string") return String(value ?? noneLabel);
-  return value.replace(/_/g, " ");
-}
-
-function formatVerb(
-  action: string,
-  details: Record<string, unknown> | null | undefined,
-  t: (key: string, options?: Record<string, unknown>) => string,
-): string {
-  if (action === "issue.updated" && details) {
-    const previous = (details._previous ?? {}) as Record<string, unknown>;
-    if (details.status !== undefined) {
-      const from = previous.status;
-      return from
-        ? t("activityRow.changedStatusFromToOn", {
-            from: humanizeValue(from, t("activityRow.none")),
-            to: humanizeValue(details.status, t("activityRow.none")),
-          })
-        : t("activityRow.changedStatusToOn", {
-            to: humanizeValue(details.status, t("activityRow.none")),
-          });
-    }
-    if (details.priority !== undefined) {
-      const from = previous.priority;
-      return from
-        ? t("activityRow.changedPriorityFromToOn", {
-            from: humanizeValue(from, t("activityRow.none")),
-            to: humanizeValue(details.priority, t("activityRow.none")),
-          })
-        : t("activityRow.changedPriorityToOn", {
-            to: humanizeValue(details.priority, t("activityRow.none")),
-          });
-    }
-  }
-  const verbKey = ACTION_VERB_KEYS[action];
-  return verbKey ? t(verbKey) : action.replace(/[._]/g, " ");
-}
 
 function entityLink(entityType: string, entityId: string, name?: string | null): string | null {
   switch (entityType) {
@@ -105,7 +27,7 @@ interface ActivityRowProps {
 
 export function ActivityRow({ event, agentMap, entityNameMap, entityTitleMap, className }: ActivityRowProps) {
   const { t } = useTranslation();
-  const verb = formatVerb(event.action, event.details, t);
+  const verb = formatActivityVerb(event.action, event.details, { agentMap });
 
   const isHeartbeatEvent = event.entityType === "heartbeat_run";
   const heartbeatAgentId = isHeartbeatEvent

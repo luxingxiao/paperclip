@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ChevronRight, Plus } from "lucide-react";
 import {
   DndContext,
-  PointerSensor,
+  MouseSensor,
   closestCenter,
   type DragEndEvent,
   useSensor,
@@ -18,6 +18,7 @@ import { useDialog } from "../context/DialogContext";
 import { useSidebar } from "../context/SidebarContext";
 import { authApi } from "../api/auth";
 import { projectsApi } from "../api/projects";
+import { SIDEBAR_SCROLL_RESET_STATE } from "../lib/navigation-scroll";
 import { queryKeys } from "../lib/queryKeys";
 import { cn, projectRouteRef } from "../lib/utils";
 import { useProjectOrder } from "../hooks/useProjectOrder";
@@ -75,6 +76,7 @@ function SortableProjectItem({
       <div className="flex flex-col gap-0.5">
         <NavLink
           to={`/projects/${routeRef}/issues`}
+          state={SIDEBAR_SCROLL_RESET_STATE}
           onClick={() => {
             if (isMobile) setSidebarOpen(false);
           }}
@@ -155,7 +157,8 @@ export function SidebarProjects() {
   const projectMatch = location.pathname.match(/^\/(?:[^/]+\/)?projects\/([^/]+)/);
   const activeProjectRef = projectMatch?.[1] ?? null;
   const sensors = useSensors(
-    useSensor(PointerSensor, {
+    // Project reordering is intentionally desktop-only; touch should remain tap/scroll behavior.
+    useSensor(MouseSensor, {
       activationConstraint: { distance: 8 },
     }),
   );
