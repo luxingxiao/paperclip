@@ -2335,5 +2335,102 @@
     "alreadyLatest": "Already on the latest version.",
     "reinstalling": "Reinstalling...",
     "reinstall": "Reinstall"
+  },
+  "projectWorkspaceDetail": {
+    "loadingWorkspace": "Loading workspace...",
+    "workspaceNotFound": "Workspace not found.",
+    "backToWorkspaces": "Back to workspaces",
+    "primaryWorkspace": "Primary workspace",
+    "secondaryWorkspace": "Secondary workspace",
+    "pageTitle": "Workspace Settings",
+    "pageDescription": "Configure this workspace's source, runtime services, and access settings.",
+    "makePrimary": "Make primary",
+    "isPrimaryDescription": "This is the primary workspace for the project.",
+    "saveChanges": "Save changes",
+    "reset": "Reset",
+    "noUnsavedChanges": "No unsaved changes",
+    "sourceTypes": {
+      "localPath": {
+        "label": "Local git checkout",
+        "description": "A local path Paperclip can use directly."
+      },
+      "nonGitPath": {
+        "label": "Local non-git path",
+        "description": "A local path that is not a git repository."
+      },
+      "gitRepo": {
+        "label": "Remote git repo",
+        "description": "A repo URL with optional refs and local checkout."
+      },
+      "remoteManaged": {
+        "label": "Remote managed",
+        "description": "A remotely managed workspace (e.g. GitHub Codespaces)."
+      }
+    },
+    "visibility": {
+      "default": "Default",
+      "advanced": "Advanced"
+    },
+    "fields": {
+      "workspaceName": "Workspace name",
+      "visibility": "Visibility",
+      "sourceType": "Source type",
+      "localPath": "Local path",
+      "repoUrl": "Repo URL",
+      "repoRef": "Repo ref",
+      "defaultRef": "Default ref",
+      "sharedWorkspaceKey": "Shared workspace key",
+      "remoteProvider": "Remote provider",
+      "remoteWorkspaceRef": "Remote workspace ref",
+      "setupCommand": "Setup command",
+      "cleanupCommand": "Cleanup command",
+      "runtimeServicesJson": "Runtime services (JSON)"
+    },
+    "hints": {
+      "setupCommand": "Runs when this workspace needs custom bootstrap",
+      "cleanupCommand": "Runs when this workspace is being torn down",
+      "runtimeServicesJson": "Defines long-running services (e.g. dev servers) to start alongside agents"
+    },
+    "breadcrumbs": {
+      "projects": "Projects",
+      "workspaces": "Workspaces"
+    },
+    "facts": {
+      "heading": "Details",
+      "currentState": "Current state",
+      "project": "Project",
+      "workspaceId": "Workspace ID",
+      "localPath": "Local path",
+      "repo": "Repo",
+      "defaultRef": "Default ref",
+      "updated": "Updated"
+    },
+    "runtime": {
+      "heading": "Runtime",
+      "attachedServices": "Attached services",
+      "description": "Services that run alongside agents using this workspace.",
+      "start": "Start",
+      "restart": "Restart",
+      "stop": "Stop",
+      "started": "Runtime services started",
+      "restarted": "Runtime services restarted",
+      "stopped": "Runtime services stopped",
+      "port": "Port {{port}}",
+      "noCommandRecorded": "No command recorded",
+      "noServicesRunning": "No services running. Use the Start button to launch them.",
+      "noDefaultConfigured": "No default runtime config. Add a runtime services JSON config above and save."
+    },
+    "errors": {
+      "failedToLoad": "Failed to load workspace",
+      "failedToSave": "Failed to save workspace",
+      "failedToUpdate": "Failed to update workspace",
+      "failedToControlRuntime": "Failed to control runtime services",
+      "remoteManagedRequiresRef": "Remote managed workspaces require a remote workspace ref or repo URL.",
+      "requiresPathOrUrl": "A local path or repo URL is required.",
+      "localPathMustBeAbsolute": "Local path must be an absolute path.",
+      "repoUrlMustBeValid": "Repo URL must be a valid URL.",
+      "runtimeJsonMustBeObject": "Runtime config must be a JSON object.",
+      "invalidJson": "Invalid JSON"
+    }
   }
 }

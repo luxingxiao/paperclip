@@ -2335,5 +2335,102 @@
     "alreadyLatest": "已是最新版本。",
     "reinstalling": "重新安装中...",
     "reinstall": "重新安装"
+  },
+  "projectWorkspaceDetail": {
+    "loadingWorkspace": "加载工作区中...",
+    "workspaceNotFound": "未找到工作区。",
+    "backToWorkspaces": "返回工作区列表",
+    "primaryWorkspace": "主工作区",
+    "secondaryWorkspace": "次要工作区",
+    "pageTitle": "工作区设置",
+    "pageDescription": "配置此工作区的代码来源、运行时服务和访问设置。",
+    "makePrimary": "设为主工作区",
+    "isPrimaryDescription": "这是该项目的主工作区。",
+    "saveChanges": "保存更改",
+    "reset": "重置",
+    "noUnsavedChanges": "无未保存的更改",
+    "sourceTypes": {
+      "localPath": {
+        "label": "本地 Git 仓库",
+        "description": "Paperclip 可直接使用的本地路径。"
+      },
+      "nonGitPath": {
+        "label": "本地非 Git 路径",
+        "description": "不是 Git 仓库的本地路径。"
+      },
+      "gitRepo": {
+        "label": "远程 Git 仓库",
+        "description": "带有可选分支引用和本地检出的仓库 URL。"
+      },
+      "remoteManaged": {
+        "label": "远程托管",
+        "description": "远程托管的工作区（例如 GitHub Codespaces）。"
+      }
+    },
+    "visibility": {
+      "default": "默认",
+      "advanced": "高级"
+    },
+    "fields": {
+      "workspaceName": "工作区名称",
+      "visibility": "可见性",
+      "sourceType": "来源类型",
+      "localPath": "本地路径",
+      "repoUrl": "仓库 URL",
+      "repoRef": "仓库引用",
+      "defaultRef": "默认引用",
+      "sharedWorkspaceKey": "共享工作区键",
+      "remoteProvider": "远程提供商",
+      "remoteWorkspaceRef": "远程工作区引用",
+      "setupCommand": "初始化命令",
+      "cleanupCommand": "清理命令",
+      "runtimeServicesJson": "运行时服务（JSON）"
+    },
+    "hints": {
+      "setupCommand": "在此工作区需要自定义初始化时运行",
+      "cleanupCommand": "在拆除此工作区时运行",
+      "runtimeServicesJson": "定义随智能体一起启动的长期运行服务（例如开发服务器）"
+    },
+    "breadcrumbs": {
+      "projects": "项目",
+      "workspaces": "工作区"
+    },
+    "facts": {
+      "heading": "详细信息",
+      "currentState": "当前状态",
+      "project": "项目",
+      "workspaceId": "工作区 ID",
+      "localPath": "本地路径",
+      "repo": "仓库",
+      "defaultRef": "默认引用",
+      "updated": "更新时间"
+    },
+    "runtime": {
+      "heading": "运行时",
+      "attachedServices": "附加服务",
+      "description": "与使用此工作区的智能体一起运行的服务。",
+      "start": "启动",
+      "restart": "重启",
+      "stop": "停止",
+      "started": "运行时服务已启动",
+      "restarted": "运行时服务已重启",
+      "stopped": "运行时服务已停止",
+      "port": "端口 {{port}}",
+      "noCommandRecorded": "未记录命令",
+      "noServicesRunning": "没有正在运行的服务。使用启动按钮来启动它们。",
+      "noDefaultConfigured": "没有默认运行时配置。请在上方添加运行时服务 JSON 配置并保存。"
+    },
+    "errors": {
+      "failedToLoad": "加载工作区失败",
+      "failedToSave": "保存工作区失败",
+      "failedToUpdate": "更新工作区失败",
+      "failedToControlRuntime": "控制运行时服务失败",
+      "remoteManagedRequiresRef": "远程托管工作区需要远程工作区引用或仓库 URL。",
+      "requiresPathOrUrl": "需要本地路径或仓库 URL。",
+      "localPathMustBeAbsolute": "本地路径必须是绝对路径。",
+      "repoUrlMustBeValid": "仓库 URL 必须是有效的 URL。",
+      "runtimeJsonMustBeObject": "运行时配置必须是 JSON 对象。",
+      "invalidJson": "JSON 格式无效"
+    }
   }
 }
