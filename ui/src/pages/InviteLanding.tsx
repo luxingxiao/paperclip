@@ -220,16 +220,16 @@ export function InviteLandingPage() {
       <div className="rounded-lg border border-border bg-card p-6">
         <h1 className="text-xl font-semibold">
           {invite.inviteType === "bootstrap_ceo"
-            ? "Bootstrap your Paperclip instance"
+            ? t("invite.bootstrapInviteTitle")
             : companyName
-              ? `Join ${companyName}`
-              : "Join this Paperclip company"}
+              ? t("invite.joinCompanyTitle", { name: companyName })
+              : t("invite.joinTitle")}
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           {invite.inviteType !== "bootstrap_ceo" && companyName
-            ? `You were invited to join ${companyName}. `
+            ? t("invite.youWereInvited", { name: companyName })
             : null}
-          Invite expires {dateTime(invite.expiresAt)}.
+          {t("invite.inviteExpiry", { time: dateTime(invite.expiresAt) })}
         </p>
 
         {invite.inviteType !== "bootstrap_ceo" && (
