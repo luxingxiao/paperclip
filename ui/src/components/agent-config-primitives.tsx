@@ -35,7 +35,7 @@ export const help: Record<string, string> = {
   dangerouslySkipPermissions: "agentConfigHelp.dangerouslySkipPermissions",
   dangerouslyBypassSandbox: "agentConfigHelp.dangerouslyBypassSandbox",
   search: "agentConfigHelp.search",
-  fastMode: "Enable Codex Fast mode. This burns credits/tokens much faster and is currently supported on GPT-5.4 only.",
+  fastMode: "agentConfigHelp.fastMode",
   workspaceStrategy: "agentConfigHelp.workspaceStrategy",
   workspaceBaseRef: "agentConfigHelp.workspaceBaseRef",
   workspaceBranchTemplate: "agentConfigHelp.workspaceBranchTemplate",

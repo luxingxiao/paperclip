@@ -18,7 +18,9 @@
     "copied": "已复制！",
     "skipToMain": "跳转到主要内容",
     "beta": "测试版",
-    "detail": "详情"
+    "detail": "详情",
+    "agent": "智能体",
+    "name": "名称"
   },
   "nav": {
     "dashboard": "仪表盘",
@@ -46,7 +48,8 @@
     "experimental": "实验性功能",
     "plugins": "插件",
     "closeSidebar": "关闭侧边栏",
-    "instanceSettingsAria": "实例设置"
+    "instanceSettingsAria": "实例设置",
+    "general": "常规"
   },
   "mobileNav": {
     "home": "首页",
@@ -384,7 +387,14 @@
     "keyCreatedPrefix": "创建于 ",
     "revokeButton": "撤销",
     "revokedKeysTitle": "已撤销密钥",
-    "keyRevokedPrefix": "撤销于 "
+    "keyRevokedPrefix": "撤销于 ",
+    "tabInstructions": "指令",
+    "canCreateAgentsHint": "允许该智能体在系统中创建新的智能体。",
+    "canAssignTasks": "可分配任务",
+    "canAssignTasksHint": "允许该智能体向其他智能体分配任务。",
+    "deprecatedVirtualFile": "已弃用的虚拟文件",
+    "file": "文件",
+    "newFileInBundle": "包中的新文件"
   },
   "issues": {
     "breadcrumb": "任务",
@@ -443,12 +453,12 @@
     "unassignedIssue": "取消分配了任务",
     "updatedTitle": "更新了标题",
     "updatedDescription": "更新了描述",
-    "tabComments": "评论",
     "tabApprovals": "审批",
     "tabCost": "成本",
     "actorSystem": "系统",
     "actorBoard": "面板",
-    "deleteAttachment": "删除附件"
+    "deleteAttachment": "删除附件",
+    "upload": "上传"
   },
   "goals": {
     "breadcrumb": "目标",
@@ -630,7 +640,8 @@
     "copied": "已复制 {{label}}",
     "failedToCopy": "复制 {{label}} 失败",
     "unknownProject": "未知",
-    "unknownAgent": "未知"
+    "unknownAgent": "未知",
+    "unknown": "未知"
   },
   "approvals": {
     "breadcrumb": "审批",
@@ -798,7 +809,8 @@
     "emailLabel": "邮筱：",
     "adapterLabel": "适配器：",
     "commentedTimeAgo": "评论于 {{timeAgo}}",
-    "updatedTimeAgo": "更新于 {{timeAgo}}"
+    "updatedTimeAgo": "更新于 {{timeAgo}}",
+    "failedRun": "运行失败"
   },
   "companySettings": {
     "breadcrumb": "设置",
@@ -1055,7 +1067,7 @@
     "searchAssignees": "搜索负责人...",
     "searchProjects": "搜索项目...",
     "createLabel": "创建标签",
-    "creating": "创建中\u2026",
+    "creating": "创建中…",
     "assignToMe": "分配给自己",
     "assignTo": "分配给 {{name}}",
     "assignToRequester": "分配给请求者",
@@ -1493,7 +1505,10 @@
     "statusPlanned": "计划中",
     "statusInProgress": "进行中",
     "statusCompleted": "已完成",
-    "statusCancelled": "已取消"
+    "statusCancelled": "已取消",
+    "optional": "可选",
+    "repoUrlHint": "粘贴该项目的 GitHub 仓库 URL。",
+    "localFolderHint": "输入该项目本地文件夹的完整绝对路径。"
   },
   "agentConfigForm": {
     "optionAuto": "自动",
@@ -1589,7 +1604,9 @@
     "searchModelsCreatable": "搜索模型...（输入以创建）",
     "noModelsFound": "未找到模型。",
     "thinkingEffort": "思考强度",
-    "current": "当前"
+    "current": "当前",
+    "useManualModel": "使用手动输入的模型",
+    "workingDirectoryDeprecated": "工作目录（已弃用）"
   },
   "activityCharts": {
     "noRunsYet": "暂无运行记录",
@@ -1752,7 +1769,8 @@
     "wakeOnDemand": "允许通过分配、API 调用、UI 操作或自动化系统唤醒该智能体。",
     "cooldownSec": "连续两次心跳运行之间的最小秒数。",
     "maxConcurrentRuns": "该智能体可同时执行的最大心跳运行数。",
-    "budgetMonthlyCents": "每月支出上限，单位为分。0 表示不限制。"
+    "budgetMonthlyCents": "每月支出上限，单位为分。0 表示不限制。",
+    "fastMode": "启用 Codex 快速模式。这会更快地消耗点数/令牌，目前仅支持 GPT-5.4。"
   },
   "runTranscript": {
     "noTranscriptYet": "暂无运行记录。",

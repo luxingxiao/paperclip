@@ -18,7 +18,9 @@
     "copied": "Copied!",
     "skipToMain": "Skip to Main Content",
     "beta": "Beta",
-    "detail": "Detail"
+    "detail": "Detail",
+    "agent": "Agent",
+    "name": "Name"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -46,7 +48,8 @@
     "experimental": "Experimental",
     "plugins": "Plugins",
     "closeSidebar": "Close sidebar",
-    "instanceSettingsAria": "Instance settings"
+    "instanceSettingsAria": "Instance settings",
+    "general": "General"
   },
   "mobileNav": {
     "home": "Home",
@@ -128,7 +131,7 @@
     "capabilities": "Capabilities (optional)",
     "signInNote": "Sign in or create an account before submitting a human join request.",
     "signInButton": "Sign in / Create account",
-    "submitting": "Submitting\u2026",
+    "submitting": "Submitting…",
     "acceptBootstrap": "Accept bootstrap invite",
     "submitJoin": "Submit join request",
     "comingSoon": " (Coming soon)"
@@ -384,7 +387,14 @@
     "keyCreatedPrefix": "Created ",
     "revokeButton": "Revoke",
     "revokedKeysTitle": "Revoked Keys",
-    "keyRevokedPrefix": "Revoked "
+    "keyRevokedPrefix": "Revoked ",
+    "tabInstructions": "Instructions",
+    "canCreateAgentsHint": "Allow this agent to create new agents in the system.",
+    "canAssignTasks": "Can assign tasks",
+    "canAssignTasksHint": "Allow this agent to assign tasks to other agents.",
+    "deprecatedVirtualFile": "deprecated virtual file",
+    "file": "file",
+    "newFileInBundle": "new file in bundle"
   },
   "issues": {
     "breadcrumb": "Issues",
@@ -447,7 +457,8 @@
     "tabCost": "Cost",
     "actorSystem": "System",
     "actorBoard": "Board",
-    "deleteAttachment": "Delete attachment"
+    "deleteAttachment": "Delete attachment",
+    "upload": "Upload"
   },
   "goals": {
     "breadcrumb": "Goals",
@@ -798,7 +809,8 @@
     "emailLabel": "email:",
     "adapterLabel": "adapter:",
     "commentedTimeAgo": "commented {{timeAgo}}",
-    "updatedTimeAgo": "updated {{timeAgo}}"
+    "updatedTimeAgo": "updated {{timeAgo}}",
+    "failedRun": "Failed run"
   },
   "companySettings": {
     "breadcrumb": "Settings",
@@ -1055,7 +1067,7 @@
     "searchAssignees": "Search assignees...",
     "searchProjects": "Search projects...",
     "createLabel": "Create label",
-    "creating": "Creating\u2026",
+    "creating": "Creating…",
     "assignToMe": "Assign to me",
     "assignTo": "Assign to {{name}}",
     "assignToRequester": "Assign to requester",
@@ -1493,7 +1505,10 @@
     "statusPlanned": "Planned",
     "statusInProgress": "In Progress",
     "statusCompleted": "Completed",
-    "statusCancelled": "Cancelled"
+    "statusCancelled": "Cancelled",
+    "optional": "optional",
+    "repoUrlHint": "Paste a GitHub repo URL for this project.",
+    "localFolderHint": "Enter the full absolute path to the local folder for this project."
   },
   "agentConfigForm": {
     "optionAuto": "Auto",
@@ -1589,7 +1604,9 @@
     "searchModelsCreatable": "Search models... (type to create)",
     "noModelsFound": "No models found.",
     "thinkingEffort": "Thinking effort",
-    "current": "current"
+    "current": "current",
+    "useManualModel": "Use manually entered model",
+    "workingDirectoryDeprecated": "Working directory (deprecated)"
   },
   "activityCharts": {
     "noRunsYet": "No runs yet",
@@ -1752,7 +1769,8 @@
     "wakeOnDemand": "Allow this agent to be woken by assignments, API calls, UI actions, or automated systems.",
     "cooldownSec": "Minimum seconds between consecutive heartbeat runs.",
     "maxConcurrentRuns": "Maximum number of heartbeat runs that can execute simultaneously for this agent.",
-    "budgetMonthlyCents": "Monthly spending limit in cents. 0 means no limit."
+    "budgetMonthlyCents": "Monthly spending limit in cents. 0 means no limit.",
+    "fastMode": "Enable Codex Fast mode. This burns credits/tokens much faster and is currently supported on GPT-5.4 only."
   },
   "runTranscript": {
     "noTranscriptYet": "No transcript yet.",

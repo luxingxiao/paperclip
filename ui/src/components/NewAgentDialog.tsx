@@ -196,7 +196,7 @@ export function NewAgentDialog() {
                     <opt.icon className="h-4 w-4" />
                     <span className="font-medium">{opt.label}</span>
                     <span className="text-muted-foreground text-[10px]">
-                      {t(`newAgentDialog.${opt.descKey}`)}
+                      {opt.desc}
                     </span>
                   </button>
                 ))}
