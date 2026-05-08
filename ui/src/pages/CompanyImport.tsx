@@ -10,13 +10,13 @@ import type {
 } from "@paperclipai/shared";
 import { useCompany } from "../context/CompanyContext";
 import { useBreadcrumbs } from "../context/BreadcrumbContext";
-import { useToast } from "../context/ToastContext";
+import { useToastActions } from "../context/ToastContext";
 import { authApi } from "../api/auth";
 import { companiesApi } from "../api/companies";
 import { agentsApi } from "../api/agents";
+import { sidebarPreferencesApi } from "../api/sidebarPreferences";
 import { queryKeys } from "../lib/queryKeys";
 import { getAgentOrderStorageKey, writeAgentOrder } from "../lib/agent-order";
-import { getProjectOrderStorageKey, writeProjectOrder } from "../lib/project-order";
 import { MarkdownBody } from "../components/MarkdownBody";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "../components/EmptyState";
@@ -44,8 +44,8 @@ import {
   collectAllPaths,
   parseFrontmatter,
   FRONTMATTER_FIELD_LABELS,
-  PackageFileTree,
-} from "../components/PackageFileTree";
+  FileTree,
+} from "../components/FileTree";
 import { readZipArchive } from "../lib/zip";
 import { getPortableFileDataUrl, getPortableFileText, isPortableImageFile } from "../lib/portable-files";
 
@@ -349,7 +349,7 @@ function prefixedName(prefix: string | null, originalName: string): string {
   return `${prefix}-${originalName}`;
 }
 
-function applyImportedSidebarOrder(
+async function applyImportedSidebarOrder(
   preview: CompanyPortabilityPreviewResult | null,
   result: {
     company: { id: string };
@@ -384,7 +384,7 @@ function applyImportedSidebarOrder(
     writeAgentOrder(getAgentOrderStorageKey(result.company.id, userId), orderedAgentIds);
   }
   if (orderedProjectIds.length > 0) {
-    writeProjectOrder(getProjectOrderStorageKey(result.company.id, userId), orderedProjectIds);
+    await sidebarPreferencesApi.updateProjectOrder(result.company.id, { orderedIds: orderedProjectIds });
   }
 }
 
@@ -659,7 +659,7 @@ export function CompanyImport() {
     setSelectedCompanyId,
   } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
-  const { pushToast } = useToast();
+  const { pushToast } = useToastActions();
   const queryClient = useQueryClient();
   const packageInputRef = useRef<HTMLInputElement | null>(null);
   const { data: session } = useQuery({
@@ -866,7 +866,7 @@ export function CompanyImport() {
         ?? refreshedSession?.user?.id
         ?? refreshedSession?.session?.userId
         ?? null;
-      applyImportedSidebarOrder(importPreview, result, sidebarOrderUserId);
+      await applyImportedSidebarOrder(importPreview, result, sidebarOrderUserId);
       setSelectedCompanyId(importedCompany.id);
       pushToast({
         tone: "success",
@@ -1330,7 +1330,7 @@ export function CompanyImport() {
                 <h2 className="text-base font-semibold">{t("companyImport.packageFiles")}</h2>
               </div>
               <div className="flex-1 overflow-y-auto">
-                <PackageFileTree
+                <FileTree
                   nodes={tree}
                   selectedFile={selectedFile}
                   expandedDirs={expandedDirs}
@@ -1340,6 +1340,7 @@ export function CompanyImport() {
                   onToggleCheck={handleToggleCheck}
                   renderFileExtra={(node, checked) => renderImportFileExtra(node, checked, renameMap)}
                   fileRowClassName={importFileRowClassName}
+                  wrapLabels={false}
                 />
               </div>
             </aside>

@@ -14,7 +14,7 @@ import {
 import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useCompany } from "../context/CompanyContext";
-import { useDialog } from "../context/DialogContext";
+import { useDialogActions } from "../context/DialogContext";
 import { useSidebar } from "../context/SidebarContext";
 import { authApi } from "../api/auth";
 import { projectsApi } from "../api/projects";
@@ -77,7 +77,11 @@ function SortableProjectItem({
         <NavLink
           to={`/projects/${routeRef}/issues`}
           state={SIDEBAR_SCROLL_RESET_STATE}
-          onClick={() => {
+          onClick={(e) => {
+            if (isDragging) {
+              e.preventDefault();
+              return;
+            }
             if (isMobile) setSidebarOpen(false);
           }}
           className={cn(
@@ -122,7 +126,7 @@ export function SidebarProjects() {
   const [open, setOpen] = useState(true);
   const { t } = useTranslation();
   const { selectedCompany, selectedCompanyId } = useCompany();
-  const { openNewProject } = useDialog();
+  const { openNewProject } = useDialogActions();
   const { isMobile, setSidebarOpen } = useSidebar();
   const location = useLocation();
 

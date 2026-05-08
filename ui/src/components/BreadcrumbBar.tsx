@@ -1,6 +1,5 @@
 import { Link } from "@/lib/router";
 import { Menu } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { useBreadcrumbs } from "../context/BreadcrumbContext";
 import { useSidebar } from "../context/SidebarContext";
 import { useCompany } from "../context/CompanyContext";
@@ -32,8 +31,7 @@ function GlobalToolbarPlugins({ context }: { context: GlobalToolbarContext }) {
 }
 
 export function BreadcrumbBar() {
-  const { t } = useTranslation();
-  const { breadcrumbs } = useBreadcrumbs();
+  const { breadcrumbs, mobileToolbar } = useBreadcrumbs();
   const { toggleSidebar, isMobile } = useSidebar();
   const { selectedCompanyId, selectedCompany } = useCompany();
 
@@ -46,6 +44,14 @@ export function BreadcrumbBar() {
   );
 
   const globalToolbarSlots = <GlobalToolbarPlugins context={globalToolbarSlotContext} />;
+
+  if (isMobile && mobileToolbar) {
+    return (
+      <div className="border-b border-border px-2 h-12 shrink-0 flex items-center">
+        {mobileToolbar}
+      </div>
+    );
+  }
 
   if (breadcrumbs.length === 0) {
     return (
@@ -61,7 +67,7 @@ export function BreadcrumbBar() {
       size="icon-sm"
       className="mr-2 shrink-0"
       onClick={toggleSidebar}
-      aria-label={t("breadcrumbBar.openSidebar")}
+      aria-label="Open sidebar"
     >
       <Menu className="h-5 w-5" />
     </Button>

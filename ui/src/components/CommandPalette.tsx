@@ -1,9 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "@/lib/router";
 import { useQuery } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
 import { useCompany } from "../context/CompanyContext";
-import { useDialog } from "../context/DialogContext";
+import { useDialogActions } from "../context/DialogContext";
 import { useSidebar } from "../context/SidebarContext";
 import { issuesApi } from "../api/issues";
 import { agentsApi } from "../api/agents";
@@ -29,17 +28,24 @@ import {
   History,
   SquarePen,
   Plus,
+  Search,
 } from "lucide-react";
 import { Identity } from "./Identity";
 import { agentUrl, projectUrl } from "../lib/utils";
+
+const SEARCH_ALL_VALUE = "__paperclip-search-all__";
+
+export function buildFullSearchPath(query: string) {
+  const trimmed = query.trim();
+  return trimmed.length === 0 ? "/search" : `/search?q=${encodeURIComponent(trimmed)}`;
+}
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
-  const { t } = useTranslation();
   const { selectedCompanyId } = useCompany();
-  const { openNewIssue, openNewAgent } = useDialog();
+  const { openNewIssue, openNewAgent } = useDialogActions();
   const { isMobile, setSidebarOpen } = useSidebar();
   const searchQuery = query.trim();
 
@@ -92,6 +98,10 @@ export function CommandPalette() {
     navigate(path);
   }
 
+  function goFullSearch() {
+    go(buildFullSearchPath(searchQuery));
+  }
+
   const agentName = (id: string | null) => {
     if (!id) return null;
     return agents.find((a) => a.id === id)?.name ?? null;
@@ -102,20 +112,61 @@ export function CommandPalette() {
     [issues, searchedIssues, searchQuery],
   );
 
+  const showSearchAll = searchQuery.length > 0;
+  const showEmptyHint = showSearchAll && visibleIssues.length === 0;
+
   return (
     <CommandDialog open={open} onOpenChange={(v) => {
         setOpen(v);
         if (v && isMobile) setSidebarOpen(false);
       }}>
       <CommandInput
-        placeholder={t("commandPalette.placeholder")}
+        placeholder="Search issues, agents, projects..."
         value={query}
         onValueChange={setQuery}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" && showEmptyHint) {
+            event.preventDefault();
+            goFullSearch();
+          }
+        }}
       />
       <CommandList>
-        <CommandEmpty>{t("commandPalette.noResults")}</CommandEmpty>
+        <CommandEmpty>
+          {showSearchAll ? (
+            <span>
+              No quick issue matches. Press{" "}
+              <kbd className="rounded border border-border bg-muted px-1 py-0.5 text-[10px]">↵</kbd>{" "}
+              to <span className="font-medium">search all</span> or keep typing to refine.
+            </span>
+          ) : (
+            "No results found."
+          )}
+        </CommandEmpty>
 
-        <CommandGroup heading={t("commandPalette.actionsGroup")}>
+        {showSearchAll ? (
+          <CommandGroup heading="Search">
+            <CommandItem
+              value={`${SEARCH_ALL_VALUE} ${searchQuery}`}
+              onSelect={goFullSearch}
+              className="bg-accent/40 border border-accent data-[selected=true]:bg-accent/60"
+              data-testid="command-search-all"
+            >
+              <Search className="mr-2 h-4 w-4" />
+              <span className="flex-1 truncate">
+                Search all for <span className="font-semibold">&ldquo;{searchQuery}&rdquo;</span>
+              </span>
+              <span className="ml-auto inline-flex items-center gap-1 text-xs text-muted-foreground">
+                <span>open full search</span>
+                <kbd className="rounded border border-border bg-background px-1 py-0.5 text-[10px]">↵</kbd>
+              </span>
+            </CommandItem>
+          </CommandGroup>
+        ) : null}
+
+        {showSearchAll ? <CommandSeparator /> : null}
+
+        <CommandGroup heading="Actions">
           <CommandItem
             onSelect={() => {
               setOpen(false);
@@ -123,7 +174,7 @@ export function CommandPalette() {
             }}
           >
             <SquarePen className="mr-2 h-4 w-4" />
-            {t("commandPalette.createIssue")}
+            Create new issue
             <span className="ml-auto text-xs text-muted-foreground">C</span>
           </CommandItem>
           <CommandItem
@@ -133,55 +184,55 @@ export function CommandPalette() {
             }}
           >
             <Plus className="mr-2 h-4 w-4" />
-            {t("commandPalette.createAgent")}
+            Create new agent
           </CommandItem>
           <CommandItem onSelect={() => go("/projects")}>
             <Plus className="mr-2 h-4 w-4" />
-            {t("commandPalette.createProject")}
+            Create new project
           </CommandItem>
         </CommandGroup>
 
         <CommandSeparator />
 
-        <CommandGroup heading={t("commandPalette.pagesGroup")}>
+        <CommandGroup heading="Pages">
           <CommandItem onSelect={() => go("/dashboard")}>
             <LayoutDashboard className="mr-2 h-4 w-4" />
-            {t("commandPalette.pageDashboard")}
+            Dashboard
           </CommandItem>
           <CommandItem onSelect={() => go("/inbox")}>
             <Inbox className="mr-2 h-4 w-4" />
-            {t("commandPalette.pageInbox")}
+            Inbox
           </CommandItem>
           <CommandItem onSelect={() => go("/issues")}>
             <CircleDot className="mr-2 h-4 w-4" />
-            {t("commandPalette.pageIssues")}
+            Issues
           </CommandItem>
           <CommandItem onSelect={() => go("/projects")}>
             <Hexagon className="mr-2 h-4 w-4" />
-            {t("commandPalette.pageProjects")}
+            Projects
           </CommandItem>
           <CommandItem onSelect={() => go("/goals")}>
             <Target className="mr-2 h-4 w-4" />
-            {t("commandPalette.pageGoals")}
+            Goals
           </CommandItem>
           <CommandItem onSelect={() => go("/agents")}>
             <Bot className="mr-2 h-4 w-4" />
-            {t("commandPalette.pageAgents")}
+            Agents
           </CommandItem>
           <CommandItem onSelect={() => go("/costs")}>
             <DollarSign className="mr-2 h-4 w-4" />
-            {t("commandPalette.pageCosts")}
+            Costs
           </CommandItem>
           <CommandItem onSelect={() => go("/activity")}>
             <History className="mr-2 h-4 w-4" />
-            {t("commandPalette.pageActivity")}
+            Activity
           </CommandItem>
         </CommandGroup>
 
         {visibleIssues.length > 0 && (
           <>
             <CommandSeparator />
-            <CommandGroup heading={t("commandPalette.issuesGroup")}>
+            <CommandGroup heading="Issues">
               {visibleIssues.slice(0, 10).map((issue) => (
                 <CommandItem
                   key={issue.id}
@@ -210,7 +261,7 @@ export function CommandPalette() {
         {agents.length > 0 && (
           <>
             <CommandSeparator />
-            <CommandGroup heading={t("commandPalette.agentsGroup")}>
+            <CommandGroup heading="Agents">
               {agents.slice(0, 10).map((agent) => (
                 <CommandItem key={agent.id} onSelect={() => go(agentUrl(agent))}>
                   <Bot className="mr-2 h-4 w-4" />
@@ -225,7 +276,7 @@ export function CommandPalette() {
         {projects.length > 0 && (
           <>
             <CommandSeparator />
-            <CommandGroup heading={t("commandPalette.projectsGroup")}>
+            <CommandGroup heading="Projects">
               {projects.slice(0, 10).map((project) => (
                 <CommandItem key={project.id} onSelect={() => go(projectUrl(project))}>
                   <Hexagon className="mr-2 h-4 w-4" />
