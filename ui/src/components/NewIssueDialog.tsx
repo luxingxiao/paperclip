@@ -107,6 +107,7 @@ import {
   type IssueModelLane,
 } from "../lib/issue-assignee-overrides";
 
+import { useTranslation } from "react-i18next";
 const STAGED_FILE_ACCEPT = "image/*,application/pdf,text/plain,text/markdown,application/json,text/csv,text/html,.md,.markdown";
 
 const ISSUE_THINKING_EFFORT_OPTIONS = {
@@ -191,6 +192,7 @@ function slugifyDocumentKey(input: string) {
 }
 
 function titleizeFilename(input: string) {
+  const { t } = useTranslation();
   return input
     .split(/[-_ ]+/g)
     .filter(Boolean)
@@ -199,6 +201,7 @@ function titleizeFilename(input: string) {
 }
 
 function createUniqueDocumentKey(baseKey: string, stagedFiles: StagedIssueFile[]) {
+  const { t } = useTranslation();
   const existingKeys = new Set(
     stagedFiles
       .filter((file) => file.kind === "document")
@@ -277,6 +280,7 @@ function defaultExecutionWorkspaceModeForIssueDefaults(
   },
   project: { executionWorkspacePolicy?: { enabled?: boolean; defaultMode?: string | null } | null } | null | undefined,
 ) {
+  const { t } = useTranslation();
   if (typeof defaults.executionWorkspaceId === "string" && defaults.executionWorkspaceId.length > 0) {
     return "reuse_existing";
   }
@@ -304,6 +308,7 @@ const IssueTitleTextarea = memo(function IssueTitleTextarea({
   projectSelectorRef: RefObject<HTMLButtonElement | null>;
   onChange: (value: string) => void;
 }) {
+  const { t } = useTranslation();
   const [draftValue, setDraftValue] = useState(value);
 
   useEffect(() => {
@@ -313,7 +318,7 @@ const IssueTitleTextarea = memo(function IssueTitleTextarea({
   return (
     <textarea
       className="w-full text-lg font-semibold bg-transparent outline-none resize-none overflow-hidden placeholder:text-muted-foreground/50"
-      placeholder="Issue title"
+      placeholder={t("newIssueDialog.issueTitle")}
       rows={1}
       value={draftValue}
       onChange={(e) => {
@@ -367,6 +372,7 @@ const IssueDescriptionEditor = memo(function IssueDescriptionEditor({
   imageUploadHandler: (file: File) => Promise<string>;
   onChange: (value: string) => void;
 }) {
+  const { t } = useTranslation();
   const [draftValue, setDraftValue] = useState(value);
 
   useEffect(() => {
@@ -381,7 +387,7 @@ const IssueDescriptionEditor = memo(function IssueDescriptionEditor({
         setDraftValue(nextValue);
         onChange(nextValue);
       }}
-      placeholder="Add description..."
+      placeholder={t("newIssueDialog.addDescription")}
       bordered={false}
       mentions={mentions}
       contentClassName={cn("text-sm text-muted-foreground pb-12", expanded ? "min-h-[220px]" : "min-h-[120px]")}
@@ -401,6 +407,7 @@ function issueExecutionWorkspaceModeForExistingWorkspace(mode: string | null | u
 }
 
 export function NewIssueDialog() {
+  const { t } = useTranslation();
   const { newIssueOpen, newIssueDefaults, closeNewIssue } = useDialog();
   const { companies, selectedCompanyId, selectedCompany } = useCompany();
   const queryClient = useQueryClient();
@@ -886,6 +893,7 @@ export function NewIssueDialog() {
   }, []);
 
   function reset() {
+  const { t } = useTranslation();
     setIssueText("", "");
     setStatus("todo");
     setPriority("");
@@ -914,6 +922,7 @@ export function NewIssueDialog() {
   }
 
   function handleCompanyChange(companyId: string) {
+  const { t } = useTranslation();
     if (isSubIssueMode) return;
     if (companyId === effectiveCompanyId) return;
     setDialogCompanyId(companyId);
@@ -934,6 +943,7 @@ export function NewIssueDialog() {
   }
 
   function discardDraft() {
+  const { t } = useTranslation();
     clearDraft();
     reset();
     closeNewIssue();
@@ -999,6 +1009,7 @@ export function NewIssueDialog() {
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
+  const { t } = useTranslation();
     if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
       e.preventDefault();
       handleSubmit();
@@ -1040,12 +1051,14 @@ export function NewIssueDialog() {
   }
 
   function handleFileDragEnter(evt: DragEvent<HTMLDivElement>) {
+  const { t } = useTranslation();
     if (!evt.dataTransfer.types.includes("Files")) return;
     evt.preventDefault();
     setIsFileDragOver(true);
   }
 
   function handleFileDragOver(evt: DragEvent<HTMLDivElement>) {
+  const { t } = useTranslation();
     if (!evt.dataTransfer.types.includes("Files")) return;
     evt.preventDefault();
     evt.dataTransfer.dropEffect = "copy";
@@ -1058,6 +1071,7 @@ export function NewIssueDialog() {
   }
 
   function handleFileDrop(evt: DragEvent<HTMLDivElement>) {
+  const { t } = useTranslation();
     if (!evt.dataTransfer.files.length) return;
     evt.preventDefault();
     setIsFileDragOver(false);
@@ -1337,11 +1351,11 @@ export function NewIssueDialog() {
                 value={assigneeValue}
                 options={assigneeOptions}
                 recentOptionIds={recentAssigneeOptionIds}
-                placeholder="Assignee"
+                placeholder={t("newIssueDialog.assignee")}
                 disablePortal
-                noneLabel="No assignee"
-                searchPlaceholder="Search assignees..."
-                emptyMessage="No assignees found."
+                noneLabel={t("newIssueDialog.noAssignee")}
+                searchPlaceholder={t("newIssueDialog.searchAssignees")}
+                emptyMessage={t("newIssueDialog.noAssigneesFound")}
                 onChange={(value) => {
                   const nextAssignee = parseAssigneeValue(value);
                   if (nextAssignee.assigneeAgentId) {
@@ -1371,7 +1385,7 @@ export function NewIssueDialog() {
                       <span className="truncate">{option.label}</span>
                     )
                   ) : (
-                    <span className="text-muted-foreground">Assignee</span>
+                    <span className="text-muted-foreground">{t("newIssueDialog.assignee")}</span>
                   )
                 }
                 renderOption={(option) => {
@@ -1393,11 +1407,11 @@ export function NewIssueDialog() {
                 value={projectId}
                 options={projectOptions}
                 recentOptionIds={recentProjectIds}
-                placeholder="Project"
+                placeholder={t("newIssueDialog.project")}
                 disablePortal
-                noneLabel="No project"
-                searchPlaceholder="Search projects..."
-                emptyMessage="No projects found."
+                noneLabel={t("newIssueDialog.noProject")}
+                searchPlaceholder={t("newIssueDialog.searchProjects")}
+                emptyMessage={t("newIssueDialog.noProjectsFound")}
                 onChange={handleProjectChange}
                 onConfirm={() => {
                   descriptionEditorRef.current?.focus();
@@ -1412,7 +1426,7 @@ export function NewIssueDialog() {
                       <span className="truncate">{option.label}</span>
                     </>
                   ) : (
-                    <span className="text-muted-foreground">Project</span>
+                    <span className="text-muted-foreground">{t("newIssueDialog.project")}</span>
                   )
                 }
                 renderOption={(option) => {
@@ -1586,9 +1600,9 @@ export function NewIssueDialog() {
           {currentProject && currentProjectSupportsExecutionWorkspace && (
             <div className="px-4 py-3 space-y-2">
             <div className="space-y-1.5">
-              <div className="text-xs font-medium">Execution workspace</div>
+              <div className="text-xs font-medium">{t("newIssueDialog.executionWorkspace")}</div>
               <div className="text-[11px] text-muted-foreground">
-                Control whether this issue runs in the shared workspace, a new isolated workspace, or an existing one.
+                {t("newIssueDialog.executionWorkspaceDescription")}
               </div>
               <select
                 className="w-full rounded border border-border bg-transparent px-2 py-1.5 text-xs outline-none"
@@ -1612,7 +1626,7 @@ export function NewIssueDialog() {
                   value={selectedExecutionWorkspaceId}
                   onChange={(e) => setSelectedExecutionWorkspaceId(e.target.value)}
                 >
-                  <option value="">Choose an existing workspace</option>
+                  <option value="">{t("newIssueDialog.chooseExistingWorkspace")}</option>
                   {deduplicatedReusableWorkspaces.map((workspace) => (
                     <option key={workspace.id} value={workspace.id}>
                       {workspace.name} · {workspace.status} · {workspace.branchName ?? workspace.cwd ?? workspace.id.slice(0, 8)}
@@ -1691,22 +1705,22 @@ export function NewIssueDialog() {
                 </div>
                 {assigneeModelLane === "custom" && (
                   <div className="space-y-1.5">
-                    <div className="text-xs text-muted-foreground">Model</div>
+                    <div className="text-xs text-muted-foreground">{t("newIssueDialog.model")}</div>
                     <InlineEntitySelector
                       value={assigneeModelOverride}
                       options={modelOverrideOptions}
-                      placeholder="Default model"
+                      placeholder={t("newIssueDialog.defaultModel")}
                       disablePortal
-                      noneLabel="Default model"
-                      searchPlaceholder="Search models..."
-                      emptyMessage="No models found."
+                      noneLabel={t("newIssueDialog.defaultModel")}
+                      searchPlaceholder={t("newIssueDialog.searchModels")}
+                      emptyMessage={t("newIssueDialog.noModelsFound")}
                       onChange={setAssigneeModelOverride}
                     />
                   </div>
                 )}
                 {assigneeModelLane === "custom" && (
                   <div className="space-y-1.5">
-                    <div className="text-xs text-muted-foreground">Thinking effort</div>
+                    <div className="text-xs text-muted-foreground">{t("newIssueDialog.thinkingEffort")}</div>
                     <div className="flex items-center gap-1.5 flex-wrap">
                       {thinkingEffortOptions.map((option) => (
                         <button
@@ -1764,7 +1778,7 @@ export function NewIssueDialog() {
               <div className="mt-4 space-y-3 rounded-lg border border-border/70 p-3">
               {stagedDocuments.length > 0 ? (
                 <div className="space-y-2">
-                  <div className="text-xs font-medium text-muted-foreground">Documents</div>
+                  <div className="text-xs font-medium text-muted-foreground">{t("newIssueDialog.documents")}</div>
                   <div className="space-y-2">
                     {stagedDocuments.map((file) => (
                       <div key={file.id} className="flex items-start justify-between gap-3 rounded-md border border-border/70 px-3 py-2">
@@ -1788,7 +1802,7 @@ export function NewIssueDialog() {
                           className="shrink-0 text-muted-foreground"
                           onClick={() => removeStagedFile(file.id)}
                           disabled={createIssue.isPending}
-                          title="Remove document"
+                          title={t("newIssueDialog.removeDocument")}
                         >
                           <X className="h-3.5 w-3.5" />
                         </Button>
@@ -1800,7 +1814,7 @@ export function NewIssueDialog() {
 
               {stagedAttachments.length > 0 ? (
                 <div className="space-y-2">
-                  <div className="text-xs font-medium text-muted-foreground">Attachments</div>
+                  <div className="text-xs font-medium text-muted-foreground">{t("newIssueDialog.attachments")}</div>
                   <div className="space-y-2">
                     {stagedAttachments.map((file) => (
                       <div key={file.id} className="flex items-start justify-between gap-3 rounded-md border border-border/70 px-3 py-2">
@@ -1819,7 +1833,7 @@ export function NewIssueDialog() {
                           className="shrink-0 text-muted-foreground"
                           onClick={() => removeStagedFile(file.id)}
                           disabled={createIssue.isPending}
-                          title="Remove attachment"
+                          title={t("newIssueDialog.removeAttachment")}
                         >
                           <X className="h-3.5 w-3.5" />
                         </Button>
@@ -1919,7 +1933,7 @@ export function NewIssueDialog() {
             disabled={createIssue.isPending}
           >
             <Paperclip className="h-3 w-3" />
-            Upload
+            {t("newIssueDialog.upload")}
           </button>
 
           {/* Work mode chip */}
@@ -1974,11 +1988,11 @@ export function NewIssueDialog() {
             <PopoverContent className="w-44 p-1" align="start">
               <button className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-muted-foreground">
                 <Calendar className="h-3 w-3" />
-                Start date
+                {t("newIssueDialog.startDate")}
               </button>
               <button className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-muted-foreground">
                 <Calendar className="h-3 w-3" />
-                Due date
+                {t("newIssueDialog.dueDate")}
               </button>
             </PopoverContent>
           </Popover>
@@ -2005,14 +2019,14 @@ export function NewIssueDialog() {
             onClick={discardDraft}
             disabled={createIssue.isPending || !canDiscardDraft}
           >
-            Discard Draft
+            {t("newIssueDialog.discardDraft")}
           </Button>
           <div className="flex items-center gap-3">
             <div className="min-h-5 text-right">
               {createIssue.isPending ? (
                 <span className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                   <Loader2 className="h-3 w-3 animate-spin" />
-                  Creating issue...
+                  {t("newIssueDialog.creatingIssue")}
                 </span>
               ) : createIssue.isError ? (
                 <span className="text-xs text-destructive">{createIssueErrorMessage}</span>

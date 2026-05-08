@@ -63,6 +63,7 @@ export const help: Record<string, string> = {
 };
 
 import { getAdapterLabels } from "../adapters/adapter-display-registry";
+import { useTranslation } from "react-i18next";
 
 export const adapterLabels = getAdapterLabels();
 
@@ -71,6 +72,7 @@ export const roleLabels = AGENT_ROLE_LABELS as Record<string, string>;
 /* ---- Primitive components ---- */
 
 export function HintIcon({ text }: { text: string }) {
+  const { t } = useTranslation();
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -232,6 +234,7 @@ export function AutoExpandTextarea({
   placeholder?: string;
   minRows?: number;
 }) {
+  const { t } = useTranslation();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const rows = minRows ?? 3;
   const lineHeight = 20;
@@ -275,6 +278,7 @@ export function DraftInput({
   immediate?: boolean;
   className?: string;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "className">) {
+  const { t } = useTranslation();
   const [draft, setDraft] = useState(value);
   useEffect(() => setDraft(value), [value]);
 
@@ -310,6 +314,7 @@ export function DraftTextarea({
   placeholder?: string;
   minRows?: number;
 }) {
+  const { t } = useTranslation();
   const [draft, setDraft] = useState(value);
   useEffect(() => setDraft(value), [value]);
 
@@ -360,6 +365,7 @@ export function DraftNumberInput({
   immediate?: boolean;
   className?: string;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "className" | "type">) {
+  const { t } = useTranslation();
   const [draft, setDraft] = useState(String(value));
   useEffect(() => setDraft(String(value)), [value]);
 
@@ -386,6 +392,7 @@ export function DraftNumberInput({
  * type the path due to browser security limitations.
  */
 export function ChoosePathButton() {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -394,12 +401,12 @@ export function ChoosePathButton() {
         className="inline-flex items-center rounded-md border border-border px-2 py-0.5 text-xs text-muted-foreground hover:bg-accent/50 transition-colors shrink-0"
         onClick={() => setOpen(true)}
       >
-        Choose
+        {t("pathInstructions.choose")}
       </button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Specify path manually</DialogTitle>
+            <DialogTitle>{t("pathInstructions.title")}</DialogTitle>
             <DialogDescription>
               Browser security blocks apps from reading full local paths via a file picker.
               Copy the absolute path and paste it into the input.
@@ -407,35 +414,35 @@ export function ChoosePathButton() {
           </DialogHeader>
           <div className="space-y-4 text-sm">
             <section className="space-y-1.5">
-              <p className="font-medium">macOS (Finder)</p>
+              <p className="font-medium">{t("pathInstructions.macos")}</p>
               <ol className="list-decimal space-y-1 pl-5 text-muted-foreground">
-                <li>Find the folder in Finder.</li>
+                <li>{t("pathInstructions.macosStep1")}</li>
                 <li>Hold <kbd>Option</kbd> and right-click the folder.</li>
                 <li>Click "Copy &lt;folder name&gt; as Pathname".</li>
-                <li>Paste the result into the path input.</li>
+                <li>{t("pathInstructions.macosStep4")}</li>
               </ol>
               <p className="rounded-md bg-muted px-2 py-1 font-mono text-xs">
                 /Users/yourname/Documents/project
               </p>
             </section>
             <section className="space-y-1.5">
-              <p className="font-medium">Windows (File Explorer)</p>
+              <p className="font-medium">{t("pathInstructions.windows")}</p>
               <ol className="list-decimal space-y-1 pl-5 text-muted-foreground">
-                <li>Find the folder in File Explorer.</li>
+                <li>{t("pathInstructions.windowsStep1")}</li>
                 <li>Hold <kbd>Shift</kbd> and right-click the folder.</li>
-                <li>Click "Copy as path".</li>
-                <li>Paste the result into the path input.</li>
+                <li>{t("pathInstructions.windowsStep3")}</li>
+                <li>{t("pathInstructions.macosStep4")}</li>
               </ol>
               <p className="rounded-md bg-muted px-2 py-1 font-mono text-xs">
                 C:\Users\yourname\Documents\project
               </p>
             </section>
             <section className="space-y-1.5">
-              <p className="font-medium">Terminal fallback (macOS/Linux)</p>
+              <p className="font-medium">{t("pathInstructions.terminal")}</p>
               <ol className="list-decimal space-y-1 pl-5 text-muted-foreground">
                 <li>Run <code>cd /path/to/folder</code>.</li>
                 <li>Run <code>pwd</code>.</li>
-                <li>Copy the output and paste it into the path input.</li>
+                <li>{t("pathInstructions.terminalStep3")}</li>
               </ol>
             </section>
           </div>

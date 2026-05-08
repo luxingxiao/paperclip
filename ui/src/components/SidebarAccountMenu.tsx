@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   BookOpen,
+  Languages,
   LogOut,
   type LucideIcon,
   Moon,
@@ -10,6 +12,7 @@ import {
   Sun,
   UserRoundPen,
 } from "lucide-react";
+import { setLanguage } from "../lib/i18n";
 import type { DeploymentMode } from "@paperclipai/shared";
 import { Link } from "@/lib/router";
 import { authApi } from "@/api/auth";
@@ -112,6 +115,8 @@ export function SidebarAccountMenu({
   const queryClient = useQueryClient();
   const { isMobile, setSidebarOpen } = useSidebar();
   const { theme, toggleTheme } = useTheme();
+  const { i18n, t } = useTranslation();
+  const currentLang = i18n.language;
   const open = controlledOpen ?? internalOpen;
   const setOpen = onOpenChange ?? setInternalOpen;
   const { data: session } = useQuery({
@@ -221,6 +226,15 @@ export function SidebarAccountMenu({
                 icon={theme === "dark" ? Sun : Moon}
                 onClick={() => {
                   toggleTheme();
+                  setOpen(false);
+                }}
+              />
+              <MenuAction
+                label={currentLang === "zh" ? t("languageSwitcher.switchToEnglish") : t("languageSwitcher.switchToChinese")}
+                description={currentLang === "zh" ? "Switch interface language to English." : "切换界面语言为中文。"}
+                icon={Languages}
+                onClick={() => {
+                  setLanguage(currentLang === "zh" ? "en" : "zh");
                   setOpen(false);
                 }}
               />

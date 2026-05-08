@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Check, ChevronDown, ChevronRight, Copy, Diff, Download, FilePenLine, FileText, MoreHorizontal, Plus, Trash2, X } from "lucide-react";
 import { DocumentDiffModal } from "./DocumentDiffModal";
+import { useTranslation } from "react-i18next";
 
 type DraftState = {
   key: string;
@@ -92,6 +93,7 @@ function isDocumentConflictError(error: unknown) {
 }
 
 function downloadDocumentFile(key: string, body: string) {
+  const { t } = useTranslation();
   const blob = new Blob([body], { type: "text/markdown;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
@@ -158,6 +160,7 @@ export function IssueDocumentsSection({
   ) => Promise<void>;
   extraActions?: ReactNode;
 }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const location = useLocation();
   const [confirmDeleteKey, setConfirmDeleteKey] = useState<string | null>(null);
@@ -314,6 +317,7 @@ export function IssueDocumentsSection({
   }, [markDirty]);
 
   const beginNewDocument = () => {
+  const { t } = useTranslation();
     resetAutosaveState();
     setDocumentConflict(null);
     setDraft({
@@ -327,6 +331,7 @@ export function IssueDocumentsSection({
   };
 
   const beginEdit = (key: string) => {
+  const { t } = useTranslation();
     const doc = sortedDocuments.find((entry) => entry.key === key);
     if (!doc) return;
     const conflictedDraft = documentConflict?.key === key ? documentConflict.localDraft : null;
@@ -344,6 +349,7 @@ export function IssueDocumentsSection({
   };
 
   const cancelDraft = () => {
+  const { t } = useTranslation();
     if (autosaveDebounceRef.current) {
       clearTimeout(autosaveDebounceRef.current);
     }
@@ -694,7 +700,7 @@ export function IssueDocumentsSection({
           {extraActions}
           <Button variant="outline" size="sm" onClick={beginNewDocument} className="shrink-0">
             <Plus className="mr-1.5 h-3.5 w-3.5" />
-            <span className="hidden sm:inline">New document</span>
+            <span className="hidden sm:inline">{t("issueDocuments.newDocument")}</span>
             <span className="sm:hidden">New</span>
           </Button>
         </div>
@@ -705,7 +711,7 @@ export function IssueDocumentsSection({
             {extraActions}
             <Button variant="outline" size="sm" onClick={beginNewDocument} className="shrink-0">
               <Plus className="mr-1.5 h-3.5 w-3.5" />
-              <span className="hidden sm:inline">New document</span>
+              <span className="hidden sm:inline">{t("issueDocuments.newDocument")}</span>
               <span className="sm:hidden">New</span>
             </Button>
           </div>
@@ -726,7 +732,7 @@ export function IssueDocumentsSection({
             onChange={(event) =>
               setDraft((current) => current ? { ...current, key: event.target.value.toLowerCase() } : current)
             }
-            placeholder="Document key"
+            placeholder={t("issueDocuments.documentKey")}
           />
           {newDocumentKeyError && (
             <p className="text-xs text-destructive">{newDocumentKeyError}</p>
@@ -737,7 +743,7 @@ export function IssueDocumentsSection({
               onChange={(event) =>
                 setDraft((current) => current ? { ...current, title: event.target.value } : current)
               }
-              placeholder="Optional title"
+              placeholder={t("issueDocuments.optionalTitle")}
             />
           )}
           <MarkdownEditor
@@ -745,7 +751,7 @@ export function IssueDocumentsSection({
             onChange={(body) =>
               setDraft((current) => current ? { ...current, body } : current)
             }
-            placeholder="Markdown body"
+            placeholder={t("issueDocuments.markdownBody")}
             bordered={false}
             className="bg-transparent"
             contentClassName="min-h-[220px] text-[15px] leading-7"
@@ -920,7 +926,7 @@ export function IssueDocumentsSection({
                         variant="ghost"
                         size="icon-xs"
                         className="text-muted-foreground"
-                        title="Document actions"
+                        title={t("issueDocuments.documentActions")}
                       >
                         <MoreHorizontal className="h-3.5 w-3.5" />
                       </Button>
@@ -937,7 +943,7 @@ export function IssueDocumentsSection({
                         onClick={() => downloadDocumentFile(doc.key, displayedBody)}
                       >
                         <Download className="h-3.5 w-3.5" />
-                        Download document
+                        {t("issueDocuments.downloadDocument")}
                       </DropdownMenuItem>
                       {doc.latestRevisionNumber > 1 ? (
                         <DropdownMenuItem onClick={() => setDiffViewKey(doc.key)}>
@@ -952,7 +958,7 @@ export function IssueDocumentsSection({
                           onClick={() => setConfirmDeleteKey(doc.key)}
                         >
                           <Trash2 className="h-3.5 w-3.5" />
-                          Delete document
+                          {t("issueDocuments.deleteDocument")}
                         </DropdownMenuItem>
                       ) : null}
                     </DropdownMenuContent>
@@ -1017,9 +1023,9 @@ export function IssueDocumentsSection({
                     <div className="rounded-md border border-amber-500/30 bg-amber-500/5 px-3 py-3">
                       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div className="space-y-1">
-                          <p className="text-sm font-medium text-amber-200">Out of date</p>
+                          <p className="text-sm font-medium text-amber-200">{t("issueDocuments.outOfDate")}</p>
                           <p className="text-xs text-muted-foreground">
-                            This document changed while you were editing. Your local draft is preserved and autosave is paused.
+                            {t("issueDocuments.outOfDateDescription")}
                           </p>
                         </div>
                         <div className="flex flex-wrap items-center gap-2">
@@ -1041,14 +1047,14 @@ export function IssueDocumentsSection({
                             size="sm"
                             onClick={() => keepConflictedDraft(doc.key)}
                           >
-                            Keep my draft
+                            {t("issueDocuments.keepMyDraft")}
                           </Button>
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={() => reloadDocumentFromServer(doc.key)}
                           >
-                            Reload remote
+                            {t("issueDocuments.reloadRemote")}
                           </Button>
                           <Button
                             size="sm"
@@ -1081,7 +1087,7 @@ export function IssueDocumentsSection({
                         markDocumentDirty(doc.key);
                         setDraft((current) => current ? { ...current, title: event.target.value } : current);
                       }}
-                      placeholder="Optional title"
+                      placeholder={t("issueDocuments.optionalTitle")}
                     />
                   )}
                   <div
@@ -1103,7 +1109,7 @@ export function IssueDocumentsSection({
                             return current;
                           });
                         }}
-                        placeholder="Markdown body"
+                        placeholder={t("issueDocuments.markdownBody")}
                         bordered={false}
                         className="bg-transparent"
                         contentClassName={documentBodyContentClassName}
@@ -1160,7 +1166,7 @@ export function IssueDocumentsSection({
               {confirmDeleteKey === doc.key && (
                 <div className="mt-3 flex items-center justify-between gap-3 rounded-md border border-destructive/20 bg-destructive/5 px-4 py-3">
                   <p className="text-sm text-destructive font-medium">
-                    Delete this document? This cannot be undone.
+                    {t("issueDocuments.deleteConfirm")}
                   </p>
                   <div className="flex items-center gap-2 shrink-0">
                     <Button

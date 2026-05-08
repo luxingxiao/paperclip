@@ -30,6 +30,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs } from "@/components/ui/tabs";
 import { PluginLauncherOutlet } from "@/plugins/launchers";
 import { PluginSlotMount, PluginSlotOutlet, usePluginSlots } from "@/plugins/slots";
+import { useTranslation } from "react-i18next";
 
 /* ── Top-level tab types ── */
 
@@ -42,6 +43,7 @@ function isProjectPluginTab(value: string | null): value is ProjectPluginTab {
 }
 
 function resolveProjectTab(pathname: string, projectId: string): ProjectTab | null {
+  const { t } = useTranslation();
   const segments = pathname.split("/").filter(Boolean);
   const projectsIdx = segments.indexOf("projects");
   if (projectsIdx === -1 || segments[projectsIdx + 1] !== projectId) return null;
@@ -66,6 +68,7 @@ function OverviewContent({
   onUpdate: (data: Record<string, unknown>) => void;
   imageUploadHandler?: (file: File) => Promise<string>;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-6">
       <InlineEditor
@@ -74,7 +77,7 @@ function OverviewContent({
         nullable
         as="p"
         className="text-sm text-muted-foreground"
-        placeholder="Add a description..."
+        placeholder={t("projects.addDescription")}
         multiline
         imageUploadHandler={imageUploadHandler}
       />
@@ -88,7 +91,7 @@ function OverviewContent({
         </div>
         {project.targetDate && (
           <div>
-            <span className="text-muted-foreground">Target Date</span>
+            <span className="text-muted-foreground">{t("projects.targetDate")}</span>
             <p>{project.targetDate}</p>
           </div>
         )}
@@ -106,6 +109,7 @@ function ColorPicker({
   currentColor: string;
   onSelect: (color: string) => void;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -126,7 +130,7 @@ function ColorPicker({
         onClick={() => setOpen(!open)}
         className="shrink-0 h-5 w-5 rounded-md cursor-pointer hover:ring-2 hover:ring-foreground/20 transition-[box-shadow]"
         style={{ backgroundColor: currentColor }}
-        aria-label="Change project color"
+        aria-label={t("projects.changeColor")}
       />
       {open && (
         <div className="absolute top-full left-0 mt-2 p-2 bg-popover border border-border rounded-lg shadow-lg z-50 w-max">
@@ -157,6 +161,7 @@ function ColorPicker({
 /* ── List (issues) tab content ── */
 
 function ProjectIssuesList({ projectId, companyId }: { projectId: string; companyId: string }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   const { data: agents } = useQuery({
@@ -218,6 +223,7 @@ function ProjectPluginOperationsList({
   companyId: string;
   pluginKey: string;
 }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const originKindPrefix = `plugin:${pluginKey}`;
 
@@ -273,6 +279,7 @@ function ProjectPluginOperationsList({
 /* ── Main project page ── */
 
 export function ProjectDetail() {
+  const { t } = useTranslation();
   const { companyPrefix, projectId, filter } = useParams<{
     companyPrefix?: string;
     projectId: string;
@@ -373,6 +380,7 @@ export function ProjectDetail() {
   }, [project?.companyId, selectedCompanyId, setSelectedCompanyId]);
 
   const invalidateProject = () => {
+  const { t } = useTranslation();
     queryClient.invalidateQueries({ queryKey: queryKeys.projects.detail(routeProjectRef) });
     queryClient.invalidateQueries({ queryKey: queryKeys.projects.detail(projectLookupRef) });
     if (resolvedCompanyId) {
@@ -609,6 +617,7 @@ export function ProjectDetail() {
   if (!project) return null;
 
   const handleTabChange = (tab: ProjectTab) => {
+  const { t } = useTranslation();
     // Cache the active tab per project
     if (project?.id) {
       try { localStorage.setItem(`paperclip:project-tab:${project.id}`, tab); } catch {}
@@ -651,7 +660,7 @@ export function ProjectDetail() {
           {project.pauseReason === "budget" ? (
             <div className="inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-red-200">
               <span className="h-2 w-2 rounded-full bg-red-400" />
-              Paused by budget hard stop
+              {t("projects.pausedHardStop")}
             </div>
           ) : null}
           {project.managedByPlugin ? (

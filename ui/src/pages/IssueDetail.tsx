@@ -155,6 +155,7 @@ import {
   type IssueTreeControlMode,
 } from "@paperclipai/shared";
 
+import { useTranslation } from "react-i18next";
 type CommentReassignment = IssueCommentReassignment;
 type ActionableIssueThreadInteraction = SuggestTasksInteraction | RequestConfirmationInteraction;
 type IssueDetailComment = (IssueComment | OptimisticIssueComment) & {
@@ -285,6 +286,7 @@ function slugifyDocumentKey(input: string) {
 }
 
 function titleizeFilename(input: string) {
+  const { t } = useTranslation();
   return input
     .split(/[-_ ]+/g)
     .filter(Boolean)
@@ -350,12 +352,13 @@ function mergeOptimisticFeedbackVote(
 }
 
 function ActorIdentity({ evt, agentMap, userProfileMap }: { evt: ActivityEvent; agentMap: Map<string, Agent>; userProfileMap?: Map<string, import("../lib/company-members").CompanyUserProfile> }) {
+  const { t } = useTranslation();
   const id = evt.actorId;
   if (evt.actorType === "agent") {
     const agent = agentMap.get(id);
     return <Identity name={agent?.name ?? id.slice(0, 8)} size="sm" />;
   }
-  if (evt.actorType === "system") return <Identity name="System" size="sm" />;
+  if (evt.actorType === "system") return <Identity name={t("issueDetail.actorSystem")} size="sm" />;
   if (evt.actorType === "user") {
     const profile = userProfileMap?.get(id);
     return <Identity name={profile?.label ?? "Board"} avatarUrl={profile?.image} size="sm" />;
@@ -418,6 +421,7 @@ function IssueDetailLoadingState({
 }: {
   headerSeed: ReturnType<typeof readIssueDetailHeaderSeed>;
 }) {
+  const { t } = useTranslation();
   const identifier = headerSeed?.identifier ?? headerSeed?.id.slice(0, 8) ?? null;
 
   return (
@@ -449,7 +453,7 @@ function IssueDetailLoadingState({
               ) : (
                 <span className="inline-flex items-center gap-1 text-xs text-muted-foreground opacity-50 px-1 -mx-1 py-0.5">
                   <Hexagon className="h-3 w-3 shrink-0" />
-                  No project
+                  {t("issueDetail.noProject")}
                 </span>
               )}
             </>
@@ -515,6 +519,7 @@ function InboxMobileToolbar({
   onProperties,
   onHide,
 }: InboxMobileToolbarProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -570,7 +575,7 @@ function InboxMobileToolbar({
               onClick={() => { onProperties(); setMenuOpen(false); }}
             >
               <SlidersHorizontal className="h-3 w-3" />
-              Properties
+              {t("issueDetail.showProperties")}
             </button>
             {issueIdProp && (
               <button
@@ -950,6 +955,7 @@ function IssueDetailActivityTab({
   checkingMonitorNow,
   handoffFocusSignal = 0,
 }: IssueDetailActivityTabProps) {
+  const { t } = useTranslation();
   const { data: activity, isLoading: activityLoading } = useQuery({
     queryKey: queryKeys.issues.activity(issueId),
     queryFn: () => activityApi.forIssue(issueId),
@@ -1182,6 +1188,7 @@ function IssueDetailActivityTab({
 }
 
 export function IssueDetail() {
+  const { t } = useTranslation();
   const { issueId } = useParams<{ issueId: string }>();
   const { selectedCompanyId } = useCompany();
   const { openNewIssue } = useDialogActions();
@@ -2595,6 +2602,7 @@ export function IssueDetail() {
   useEffect(() => {
     if (!issue?.id || !canQuickArchiveFromInbox) return;
     const handleKeyDown = (event: KeyboardEvent) => {
+  const { t } = useTranslation();
       const action = resolveInboxQuickArchiveKeyAction({
         armed: canQuickArchiveFromInbox,
         defaultPrevented: event.defaultPrevented,
@@ -2631,6 +2639,7 @@ export function IssueDetail() {
     }
 
     const clearArmTimeout = () => {
+  const { t } = useTranslation();
       if (goToInboxShortcutTimeoutRef.current !== null) {
         window.clearTimeout(goToInboxShortcutTimeoutRef.current);
         goToInboxShortcutTimeoutRef.current = null;
@@ -2638,11 +2647,13 @@ export function IssueDetail() {
     };
 
     const disarm = () => {
+  const { t } = useTranslation();
       goToInboxShortcutArmedRef.current = false;
       clearArmTimeout();
     };
 
     const arm = () => {
+  const { t } = useTranslation();
       goToInboxShortcutArmedRef.current = true;
       clearArmTimeout();
       goToInboxShortcutTimeoutRef.current = window.setTimeout(() => {
@@ -2662,6 +2673,7 @@ export function IssueDetail() {
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
+  const { t } = useTranslation();
       const action = resolveIssueDetailGoKeyAction({
         armed: goToInboxShortcutArmedRef.current,
         defaultPrevented: event.defaultPrevented,
@@ -2750,6 +2762,7 @@ export function IssueDetail() {
   const copyIssueToClipboard = async () => {
     if (!issue) return;
     const decodeEntities = (text: string) => {
+  const { t } = useTranslation();
       const el = document.createElement("textarea");
       el.innerHTML = text;
       return el.value;
@@ -3080,8 +3093,8 @@ export function IssueDetail() {
         <Paperclip className="h-3.5 w-3.5 mr-1.5" />
         {uploadAttachment.isPending || importMarkdownDocument.isPending ? "Uploading..." : (
           <>
-            <span className="hidden sm:inline">Upload attachment</span>
-            <span className="sm:hidden">Upload</span>
+            <span className="hidden sm:inline">{t("issueDetail.uploadAttachment")}</span>
+            <span className="sm:hidden">{t("issueDetail.upload")}</span>
           </>
         )}
       </Button>
@@ -3120,7 +3133,7 @@ export function IssueDetail() {
       {issue.hiddenAt && (
         <div className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
           <EyeOff className="h-4 w-4 shrink-0" />
-          This issue is hidden
+          {t("issueDetail.hidden")}
         </div>
       )}
       {activePauseHold && (
@@ -3277,7 +3290,7 @@ export function IssueDetail() {
           ) : (
             <span className="inline-flex items-center gap-1 text-xs text-muted-foreground opacity-50 px-1 -mx-1 py-0.5">
               <Hexagon className="h-3 w-3 shrink-0" />
-              No project
+              {t("issueDetail.noProject")}
             </span>
           )}
 
@@ -3308,7 +3321,7 @@ export function IssueDetail() {
                 variant="ghost"
                 size="icon-xs"
                 onClick={copyIssueToClipboard}
-                title="Copy issue as markdown"
+                title={t("issueDetail.copyMarkdown")}
               >
                 {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
               </Button>
@@ -3316,7 +3329,7 @@ export function IssueDetail() {
                 variant="ghost"
                 size="icon-xs"
                 onClick={() => setMobilePropsOpen(true)}
-                title="Properties"
+                title={t("issueDetail.showProperties")}
               >
                 <SlidersHorizontal className="h-4 w-4" />
               </Button>
@@ -3342,7 +3355,7 @@ export function IssueDetail() {
               variant="ghost"
               size="icon-xs"
               onClick={copyIssueToClipboard}
-              title="Copy issue as markdown"
+              title={t("issueDetail.copyMarkdown")}
             >
               {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
             </Button>
@@ -3354,7 +3367,7 @@ export function IssueDetail() {
                 panelVisible ? "opacity-0 pointer-events-none w-0 overflow-hidden" : "opacity-100",
               )}
               onClick={() => setPanelVisible(true)}
-              title="Show properties"
+              title={t("issueDetail.showPropertiesFull")}
             >
               <SlidersHorizontal className="h-4 w-4" />
             </Button>
@@ -3474,7 +3487,7 @@ export function IssueDetail() {
                 }}
               >
                 <EyeOff className="h-3 w-3" />
-                Hide this Issue
+                {t("issueDetail.hide")}
               </button>
             </PopoverContent>
             </Popover>
@@ -3493,7 +3506,7 @@ export function IssueDetail() {
           onSave={(description) => updateIssue.mutateAsync({ description })}
           as="p"
           className="text-[15px] leading-7 text-foreground"
-          placeholder="Add a description..."
+          placeholder={t("issueDetail.addDescription")}
           multiline
           foldable
           mentions={mentionOptions}
@@ -3629,7 +3642,7 @@ export function IssueDetail() {
         onDrop={(evt) => void handleAttachmentDrop(evt)}
       >
         <div className="flex items-center justify-between gap-2">
-          <h3 className="text-sm font-medium text-muted-foreground">Attachments</h3>
+          <h3 className="text-sm font-medium text-muted-foreground">{t("issueDetail.attachments")}</h3>
           {attachmentUploadButton}
         </div>
 
@@ -4038,7 +4051,7 @@ export function IssueDetail() {
       <Sheet open={mobilePropsOpen} onOpenChange={setMobilePropsOpen}>
         <SheetContent side="bottom" className="max-h-[85dvh] pb-[env(safe-area-inset-bottom)]">
           <SheetHeader>
-            <SheetTitle className="text-sm">Properties</SheetTitle>
+            <SheetTitle className="text-sm">{t("issueDetail.showProperties")}</SheetTitle>
           </SheetHeader>
           <ScrollArea className="flex-1 overflow-y-auto">
             <div className="px-4 pb-4">

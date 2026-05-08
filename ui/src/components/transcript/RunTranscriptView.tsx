@@ -13,6 +13,7 @@ import {
   Wrench,
 } from "lucide-react";
 
+import { useTranslation } from "react-i18next";
 export type TranscriptMode = "nice" | "raw";
 export type TranscriptDensity = "comfortable" | "compact";
 
@@ -246,6 +247,7 @@ function summarizeToolInput(name: string, input: unknown, density: TranscriptDen
 }
 
 function parseStructuredToolResult(result: string | undefined) {
+  const { t } = useTranslation();
   if (!result) return null;
   const lines = result.split(/\r?\n/);
   const metadata = new Map<string, string>();
@@ -273,6 +275,7 @@ function parseStructuredToolResult(result: string | undefined) {
 }
 
 function isCommandTool(name: string, input: unknown): boolean {
+  const { t } = useTranslation();
   if (name === "command_execution" || name === "shell" || name === "shellToolCall" || name === "bash") {
     return true;
   }
@@ -289,6 +292,7 @@ function displayToolName(name: string, input: unknown): string {
 }
 
 function summarizeToolResult(result: string | undefined, isError: boolean | undefined, density: TranscriptDensity): string {
+  const { t } = useTranslation();
   if (!result) return isError ? "Tool failed" : "Waiting for result";
   const structured = parseStructuredToolResult(result);
   if (structured) {
@@ -410,6 +414,7 @@ function groupToolBlocks(blocks: TranscriptBlock[]): TranscriptBlock[] {
 }
 
 export function normalizeTranscript(entries: TranscriptEntry[], streaming: boolean): TranscriptBlock[] {
+  const { t } = useTranslation();
   const blocks: TranscriptBlock[] = [];
   const pendingToolBlocks = new Map<string, Extract<TranscriptBlock, { type: "tool" }>>();
   const pendingActivityBlocks = new Map<string, Extract<TranscriptBlock, { type: "activity" }>>();
@@ -640,6 +645,7 @@ function TranscriptMessageBlock({
   block: Extract<TranscriptBlock, { type: "message" }>;
   density: TranscriptDensity;
 }) {
+  const { t } = useTranslation();
   const isAssistant = block.role === "assistant";
   const compact = density === "compact";
 
@@ -648,7 +654,7 @@ function TranscriptMessageBlock({
       {!isAssistant && (
         <div className="mb-1.5 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
           <User className={compact ? "h-3.5 w-3.5" : "h-4 w-4"} />
-          <span>User</span>
+          <span>{t("runTranscript.user")}</span>
         </div>
       )}
       <MarkdownBody
@@ -665,7 +671,7 @@ function TranscriptMessageBlock({
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-70" />
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-current" />
           </span>
-          Streaming
+          {t("runTranscript.streaming")}
         </div>
       )}
     </div>
@@ -701,6 +707,7 @@ function TranscriptToolCard({
   block: Extract<TranscriptBlock, { type: "tool" }>;
   density: TranscriptDensity;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(block.status === "error");
   const compact = density === "compact";
   const parsedResult = parseStructuredToolResult(block.result);
@@ -772,7 +779,7 @@ function TranscriptToolCard({
             <div className={cn("grid gap-3", compact ? "grid-cols-1" : "lg:grid-cols-2")}>
               <div>
                 <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                  Input
+                  {t("runTranscript.input")}
                 </div>
                 <pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-[11px] text-foreground/80">
                   {formatToolPayload(block.input) || "<empty>"}
@@ -780,7 +787,7 @@ function TranscriptToolCard({
               </div>
               <div>
                 <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                  Result
+                  {t("runTranscript.result")}
                 </div>
                 <pre className={cn(
                   "overflow-x-auto whitespace-pre-wrap break-words font-mono text-[11px]",
@@ -809,6 +816,7 @@ function TranscriptCommandGroup({
   block: Extract<TranscriptBlock, { type: "command_group" }>;
   density: TranscriptDensity;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const compact = density === "compact";
   const runningItem = [...block.items].reverse().find((item) => item.status === "running");
@@ -873,7 +881,7 @@ function TranscriptCommandGroup({
           )}
           {!subtitle && latestItem?.status === "error" && open && (
             <div className={cn("mt-1", compact ? "text-xs" : "text-sm", statusTone)}>
-              Command failed
+              {t("runTranscript.commandFailed")}
             </div>
           )}
         </div>
@@ -934,6 +942,7 @@ function TranscriptToolGroup({
   block: Extract<TranscriptBlock, { type: "tool_group" }>;
   density: TranscriptDensity;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const compact = density === "compact";
   const runningItem = [...block.items].reverse().find((item) => item.status === "running");
@@ -1035,14 +1044,14 @@ function TranscriptToolGroup({
               </div>
               <div className={cn("grid gap-2 pl-7", compact ? "grid-cols-1" : "lg:grid-cols-2")}>
                 <div>
-                  <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Input</div>
+                  <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">{t("runTranscript.input")}</div>
                   <pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-[11px] text-foreground/80">
                     {formatToolPayload(item.input) || "<empty>"}
                   </pre>
                 </div>
                 {item.result && (
                   <div>
-                    <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Result</div>
+                    <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">{t("runTranscript.result")}</div>
                     <pre className={cn(
                       "overflow-x-auto whitespace-pre-wrap break-words font-mono text-[11px]",
                       item.status === "error" ? "text-red-700 dark:text-red-300" : "text-foreground/80",
@@ -1150,6 +1159,7 @@ function TranscriptDiffGroup({
   block: Extract<TranscriptBlock, { type: "diff_group" }>;
   density: TranscriptDensity;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const compact = density === "compact";
 
@@ -1247,6 +1257,7 @@ function TranscriptStderrGroup({
   block: Extract<TranscriptBlock, { type: "stderr_group" }>;
   density: TranscriptDensity;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const compact = density === "compact";
   return (
@@ -1284,6 +1295,7 @@ function TranscriptSystemGroup({
   block: Extract<TranscriptBlock, { type: "system_group" }>;
   density: TranscriptDensity;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   return (
     <div className="rounded-xl border border-blue-500/20 bg-blue-500/[0.04] p-2 text-blue-700 dark:text-blue-300">
@@ -1353,6 +1365,7 @@ function TranscriptStdoutRow({
 }
 
 function findScrollParent(element: HTMLElement): HTMLElement | Window {
+  const { t } = useTranslation();
   let current = element.parentElement;
   while (current) {
     const style = window.getComputedStyle(current);
@@ -1387,6 +1400,7 @@ function RawTranscriptView({
   entries: TranscriptEntry[];
   density: TranscriptDensity;
 }) {
+  const { t } = useTranslation();
   const compact = density === "compact";
   const listRef = useRef<HTMLDivElement | null>(null);
   const shouldVirtualize = entries.length > RAW_VIRTUALIZATION_THRESHOLD;
@@ -1406,6 +1420,7 @@ function RawTranscriptView({
 
     const scrollParent = findScrollParent(list);
     const updateRange = () => {
+  const { t } = useTranslation();
       const scrollElement: HTMLElement | null = scrollParent === window ? null : (scrollParent as HTMLElement);
       const scrollerTop = scrollElement ? scrollElement.getBoundingClientRect().top : 0;
       const scrollerHeight = scrollElement ? scrollElement.clientHeight : window.innerHeight;
@@ -1474,6 +1489,7 @@ export function RunTranscriptView({
   className,
   thinkingClassName,
 }: RunTranscriptViewProps) {
+  const { t } = useTranslation();
   const blocks = useMemo(
     () => (mode === "raw" ? [] : normalizeTranscript(entries, streaming)),
     [entries, mode, streaming],
