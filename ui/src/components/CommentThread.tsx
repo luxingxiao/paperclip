@@ -139,7 +139,6 @@ function clearDraft(draftKey: string) {
 }
 
 function BreakablePath({ text }: { text: string }) {
-  const { t } = useTranslation();
   const parts: React.ReactNode[] = [];
   const segments = text.split(/(?<=[\/-])/);
   for (let i = 0; i < segments.length; i++) {
@@ -179,7 +178,6 @@ function formatTimelineAssigneeLabel(
   agentMap?: Map<string, Agent>,
   currentUserId?: string | null,
 ) {
-  const { t } = useTranslation();
   if (assignee.agentId) {
     return agentMap?.get(assignee.agentId)?.name ?? assignee.agentId.slice(0, 8);
   }
@@ -195,7 +193,6 @@ function formatTimelineActorName(
   agentMap?: Map<string, Agent>,
   currentUserId?: string | null,
 ) {
-  const { t } = useTranslation();
   if (actorType === "agent") {
     return agentMap?.get(actorId)?.name ?? actorId.slice(0, 8);
   }
@@ -206,7 +203,6 @@ function formatTimelineActorName(
 }
 
 function initialsForName(name: string) {
-  const { t } = useTranslation();
   const parts = name.trim().split(/\s+/);
   if (parts.length >= 2) {
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
@@ -249,7 +245,6 @@ function runStatusClass(status: string) {
 }
 
 async function copyTextWithFallback(text: string) {
-  const { t } = useTranslation();
   if (navigator.clipboard && window.isSecureContext) {
     await navigator.clipboard.writeText(text);
     return;
@@ -271,7 +266,6 @@ async function copyTextWithFallback(text: string) {
 }
 
 function CopyMarkdownButton({ text }: { text: string }) {
-  const { t } = useTranslation();
   const [status, setStatus] = useState<"idle" | "copied" | "failed">("idle");
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -887,7 +881,6 @@ export function CommentThread({
   }, [location.hash, comments, queuedComments]);
 
   async function handleSubmit() {
-  const { t } = useTranslation();
     const trimmed = body.trim();
     if (!trimmed) return;
     const hasReassignment = enableReassign && reassignTarget !== currentAssigneeValue;

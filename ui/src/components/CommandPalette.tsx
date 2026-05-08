@@ -37,7 +37,6 @@ import { useTranslation } from "react-i18next";
 const SEARCH_ALL_VALUE = "__paperclip-search-all__";
 
 export function buildFullSearchPath(query: string) {
-  const { t } = useTranslation();
   const trimmed = query.trim();
   return trimmed.length === 0 ? "/search" : `/search?q=${encodeURIComponent(trimmed)}`;
 }
@@ -54,7 +53,6 @@ export function CommandPalette() {
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-  const { t } = useTranslation();
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setOpen(true);

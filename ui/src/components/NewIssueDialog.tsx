@@ -192,7 +192,6 @@ function slugifyDocumentKey(input: string) {
 }
 
 function titleizeFilename(input: string) {
-  const { t } = useTranslation();
   return input
     .split(/[-_ ]+/g)
     .filter(Boolean)
@@ -201,7 +200,6 @@ function titleizeFilename(input: string) {
 }
 
 function createUniqueDocumentKey(baseKey: string, stagedFiles: StagedIssueFile[]) {
-  const { t } = useTranslation();
   const existingKeys = new Set(
     stagedFiles
       .filter((file) => file.kind === "document")
@@ -280,7 +278,6 @@ function defaultExecutionWorkspaceModeForIssueDefaults(
   },
   project: { executionWorkspacePolicy?: { enabled?: boolean; defaultMode?: string | null } | null } | null | undefined,
 ) {
-  const { t } = useTranslation();
   if (typeof defaults.executionWorkspaceId === "string" && defaults.executionWorkspaceId.length > 0) {
     return "reuse_existing";
   }
@@ -893,7 +890,6 @@ export function NewIssueDialog() {
   }, []);
 
   function reset() {
-  const { t } = useTranslation();
     setIssueText("", "");
     setStatus("todo");
     setPriority("");
@@ -922,7 +918,6 @@ export function NewIssueDialog() {
   }
 
   function handleCompanyChange(companyId: string) {
-  const { t } = useTranslation();
     if (isSubIssueMode) return;
     if (companyId === effectiveCompanyId) return;
     setDialogCompanyId(companyId);
@@ -943,7 +938,6 @@ export function NewIssueDialog() {
   }
 
   function discardDraft() {
-  const { t } = useTranslation();
     clearDraft();
     reset();
     closeNewIssue();
@@ -1009,7 +1003,6 @@ export function NewIssueDialog() {
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
-  const { t } = useTranslation();
     if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
       e.preventDefault();
       handleSubmit();
@@ -1051,14 +1044,12 @@ export function NewIssueDialog() {
   }
 
   function handleFileDragEnter(evt: DragEvent<HTMLDivElement>) {
-  const { t } = useTranslation();
     if (!evt.dataTransfer.types.includes("Files")) return;
     evt.preventDefault();
     setIsFileDragOver(true);
   }
 
   function handleFileDragOver(evt: DragEvent<HTMLDivElement>) {
-  const { t } = useTranslation();
     if (!evt.dataTransfer.types.includes("Files")) return;
     evt.preventDefault();
     evt.dataTransfer.dropEffect = "copy";
@@ -1071,7 +1062,6 @@ export function NewIssueDialog() {
   }
 
   function handleFileDrop(evt: DragEvent<HTMLDivElement>) {
-  const { t } = useTranslation();
     if (!evt.dataTransfer.files.length) return;
     evt.preventDefault();
     setIsFileDragOver(false);

@@ -109,7 +109,6 @@ function mergeFrontmatter(markdown: string, body: string) {
 }
 
 function buildTree(entries: CompanySkillFileInventoryEntry[]) {
-  const { t } = useTranslation();
   const root: SkillTreeNode = { name: "", path: null, kind: "dir", children: [] };
 
   for (const entry of entries) {
@@ -135,7 +134,6 @@ function buildTree(entries: CompanySkillFileInventoryEntry[]) {
   }
 
   function sortNode(node: SkillTreeNode) {
-  const { t } = useTranslation();
     node.children.sort((left, right) => {
       if (left.kind !== right.kind) return left.kind === "dir" ? -1 : 1;
       if (left.name === "SKILL.md") return -1;
@@ -200,12 +198,10 @@ function fileIcon(kind: CompanySkillFileInventoryEntry["kind"]) {
 }
 
 function encodeSkillFilePath(filePath: string) {
-  const { t } = useTranslation();
   return filePath.split("/").map((segment) => encodeURIComponent(segment)).join("/");
 }
 
 function decodeSkillFilePath(filePath: string | undefined) {
-  const { t } = useTranslation();
   if (!filePath) return "SKILL.md";
   return filePath
     .split("/")
@@ -221,7 +217,6 @@ function decodeSkillFilePath(filePath: string | undefined) {
 }
 
 function parseSkillRoute(routePath: string | undefined) {
-  const { t } = useTranslation();
   const segments = (routePath ?? "").split("/").filter(Boolean);
   if (segments.length === 0) {
     return { skillId: null, filePath: "SKILL.md" };
@@ -248,7 +243,6 @@ function skillRoute(skillId: string, filePath?: string | null) {
 }
 
 function parentDirectoryPaths(filePath: string) {
-  const { t } = useTranslation();
   const segments = filePath.split("/").filter(Boolean);
   const parents: string[] = [];
   for (let index = 0; index < segments.length - 1; index += 1) {

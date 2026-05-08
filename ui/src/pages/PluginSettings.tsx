@@ -582,7 +582,6 @@ interface PluginLocalFoldersSettingsProps {
 }
 
 function PluginLocalFoldersSettings({ pluginId, companyId, declarations }: PluginLocalFoldersSettingsProps) {
-  const { t } = useTranslation();
   const { data, isLoading, error } = useQuery({
     queryKey: companyId
       ? queryKeys.plugins.localFolders(pluginId, companyId)
@@ -642,7 +641,6 @@ interface PluginLocalFolderRowProps {
 }
 
 function PluginLocalFolderRow({ pluginId, companyId, declaration, status }: PluginLocalFolderRowProps) {
-  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const serverPath = status?.path ?? "";
   const [pathValue, setPathValue] = useState(serverPath);
@@ -910,7 +908,6 @@ function RequirementList({
 }
 
 function isLikelyAbsolutePath(pathValue: string) {
-  const { t } = useTranslation();
   return (
     pathValue.startsWith("/") ||
     /^[A-Za-z]:[\\/]/.test(pathValue) ||

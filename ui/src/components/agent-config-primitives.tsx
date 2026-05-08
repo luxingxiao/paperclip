@@ -72,7 +72,6 @@ export const roleLabels = AGENT_ROLE_LABELS as Record<string, string>;
 /* ---- Primitive components ---- */
 
 export function HintIcon({ text }: { text: string }) {
-  const { t } = useTranslation();
   return (
     <Tooltip>
       <TooltipTrigger asChild>

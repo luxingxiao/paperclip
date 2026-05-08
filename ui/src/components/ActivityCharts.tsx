@@ -46,7 +46,6 @@ function ChartLegend({ items }: { items: { color: string; label: string }[] }) {
 }
 
 export function ChartCard({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
-  const { t } = useTranslation();
   return (
     <div className="border border-border rounded-lg p-4 space-y-3">
       <div>
@@ -65,7 +64,6 @@ type RunChartProps =
   | { runs?: HeartbeatRun[] | null; activity?: never };
 
 function aggregateRuns(runs: readonly HeartbeatRun[] = []): DashboardRunActivityDay[] {
-  const { t } = useTranslation();
   const days = getLast14Days();
   const grouped = new Map<string, DashboardRunActivityDay>();
   for (const day of days) grouped.set(day, { date: day, succeeded: 0, failed: 0, other: 0, total: 0 });

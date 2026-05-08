@@ -247,7 +247,6 @@ function summarizeToolInput(name: string, input: unknown, density: TranscriptDen
 }
 
 function parseStructuredToolResult(result: string | undefined) {
-  const { t } = useTranslation();
   if (!result) return null;
   const lines = result.split(/\r?\n/);
   const metadata = new Map<string, string>();
@@ -275,7 +274,6 @@ function parseStructuredToolResult(result: string | undefined) {
 }
 
 function isCommandTool(name: string, input: unknown): boolean {
-  const { t } = useTranslation();
   if (name === "command_execution" || name === "shell" || name === "shellToolCall" || name === "bash") {
     return true;
   }
@@ -292,7 +290,6 @@ function displayToolName(name: string, input: unknown): string {
 }
 
 function summarizeToolResult(result: string | undefined, isError: boolean | undefined, density: TranscriptDensity): string {
-  const { t } = useTranslation();
   if (!result) return isError ? "Tool failed" : "Waiting for result";
   const structured = parseStructuredToolResult(result);
   if (structured) {
@@ -414,7 +411,6 @@ function groupToolBlocks(blocks: TranscriptBlock[]): TranscriptBlock[] {
 }
 
 export function normalizeTranscript(entries: TranscriptEntry[], streaming: boolean): TranscriptBlock[] {
-  const { t } = useTranslation();
   const blocks: TranscriptBlock[] = [];
   const pendingToolBlocks = new Map<string, Extract<TranscriptBlock, { type: "tool" }>>();
   const pendingActivityBlocks = new Map<string, Extract<TranscriptBlock, { type: "activity" }>>();
@@ -1159,7 +1155,6 @@ function TranscriptDiffGroup({
   block: Extract<TranscriptBlock, { type: "diff_group" }>;
   density: TranscriptDensity;
 }) {
-  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const compact = density === "compact";
 
@@ -1257,7 +1252,6 @@ function TranscriptStderrGroup({
   block: Extract<TranscriptBlock, { type: "stderr_group" }>;
   density: TranscriptDensity;
 }) {
-  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const compact = density === "compact";
   return (
@@ -1295,7 +1289,6 @@ function TranscriptSystemGroup({
   block: Extract<TranscriptBlock, { type: "system_group" }>;
   density: TranscriptDensity;
 }) {
-  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   return (
     <div className="rounded-xl border border-blue-500/20 bg-blue-500/[0.04] p-2 text-blue-700 dark:text-blue-300">
@@ -1365,7 +1358,6 @@ function TranscriptStdoutRow({
 }
 
 function findScrollParent(element: HTMLElement): HTMLElement | Window {
-  const { t } = useTranslation();
   let current = element.parentElement;
   while (current) {
     const style = window.getComputedStyle(current);
@@ -1400,7 +1392,6 @@ function RawTranscriptView({
   entries: TranscriptEntry[];
   density: TranscriptDensity;
 }) {
-  const { t } = useTranslation();
   const compact = density === "compact";
   const listRef = useRef<HTMLDivElement | null>(null);
   const shouldVirtualize = entries.length > RAW_VIRTUALIZATION_THRESHOLD;
@@ -1420,7 +1411,6 @@ function RawTranscriptView({
 
     const scrollParent = findScrollParent(list);
     const updateRange = () => {
-  const { t } = useTranslation();
       const scrollElement: HTMLElement | null = scrollParent === window ? null : (scrollParent as HTMLElement);
       const scrollerTop = scrollElement ? scrollElement.getBoundingClientRect().top : 0;
       const scrollerHeight = scrollElement ? scrollElement.clientHeight : window.innerHeight;
@@ -1489,7 +1479,6 @@ export function RunTranscriptView({
   className,
   thinkingClassName,
 }: RunTranscriptViewProps) {
-  const { t } = useTranslation();
   const blocks = useMemo(
     () => (mode === "raw" ? [] : normalizeTranscript(entries, streaming)),
     [entries, mode, streaming],

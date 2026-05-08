@@ -93,7 +93,6 @@ function isDocumentConflictError(error: unknown) {
 }
 
 function downloadDocumentFile(key: string, body: string) {
-  const { t } = useTranslation();
   const blob = new Blob([body], { type: "text/markdown;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
@@ -317,7 +316,6 @@ export function IssueDocumentsSection({
   }, [markDirty]);
 
   const beginNewDocument = () => {
-  const { t } = useTranslation();
     resetAutosaveState();
     setDocumentConflict(null);
     setDraft({
@@ -331,7 +329,6 @@ export function IssueDocumentsSection({
   };
 
   const beginEdit = (key: string) => {
-  const { t } = useTranslation();
     const doc = sortedDocuments.find((entry) => entry.key === key);
     if (!doc) return;
     const conflictedDraft = documentConflict?.key === key ? documentConflict.localDraft : null;
@@ -349,7 +346,6 @@ export function IssueDocumentsSection({
   };
 
   const cancelDraft = () => {
-  const { t } = useTranslation();
     if (autosaveDebounceRef.current) {
       clearTimeout(autosaveDebounceRef.current);
     }

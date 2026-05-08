@@ -43,7 +43,6 @@ function isProjectPluginTab(value: string | null): value is ProjectPluginTab {
 }
 
 function resolveProjectTab(pathname: string, projectId: string): ProjectTab | null {
-  const { t } = useTranslation();
   const segments = pathname.split("/").filter(Boolean);
   const projectsIdx = segments.indexOf("projects");
   if (projectsIdx === -1 || segments[projectsIdx + 1] !== projectId) return null;
@@ -161,7 +160,6 @@ function ColorPicker({
 /* ── List (issues) tab content ── */
 
 function ProjectIssuesList({ projectId, companyId }: { projectId: string; companyId: string }) {
-  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   const { data: agents } = useQuery({
@@ -223,7 +221,6 @@ function ProjectPluginOperationsList({
   companyId: string;
   pluginKey: string;
 }) {
-  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const originKindPrefix = `plugin:${pluginKey}`;
 
@@ -380,7 +377,6 @@ export function ProjectDetail() {
   }, [project?.companyId, selectedCompanyId, setSelectedCompanyId]);
 
   const invalidateProject = () => {
-  const { t } = useTranslation();
     queryClient.invalidateQueries({ queryKey: queryKeys.projects.detail(routeProjectRef) });
     queryClient.invalidateQueries({ queryKey: queryKeys.projects.detail(projectLookupRef) });
     if (resolvedCompanyId) {
@@ -617,7 +613,6 @@ export function ProjectDetail() {
   if (!project) return null;
 
   const handleTabChange = (tab: ProjectTab) => {
-  const { t } = useTranslation();
     // Cache the active tab per project
     if (project?.id) {
       try { localStorage.setItem(`paperclip:project-tab:${project.id}`, tab); } catch {}

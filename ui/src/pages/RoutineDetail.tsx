@@ -109,7 +109,6 @@ function isRoutineTab(value: string | null): value is RoutineTab {
 }
 
 function getRoutineTabFromSearch(search: string): RoutineTab {
-  const { t } = useTranslation();
   const tab = new URLSearchParams(search).get("tab");
   return isRoutineTab(tab) ? tab : "triggers";
 }
@@ -127,7 +126,6 @@ function formatActivityDetailValue(value: unknown): string {
 }
 
 function getLocalTimezone(): string {
-  const { t } = useTranslation();
   try {
     return Intl.DateTimeFormat().resolvedOptions().timeZone;
   } catch {
@@ -447,7 +445,6 @@ export function RoutineDetail() {
   };
 
   const setActiveTab = (value: string) => {
-  const { t } = useTranslation();
     if (!routineId || !isRoutineTab(value)) return;
     const params = new URLSearchParams(location.search);
     if (value === "triggers") {

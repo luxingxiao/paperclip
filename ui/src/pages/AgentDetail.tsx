@@ -129,19 +129,16 @@ function redactPathValue<T>(value: T, censorUsernameInLogs: boolean): T {
 }
 
 function redactCommandText(value: string, censorUsernameInLogs: boolean): string {
-  const { t } = useTranslation();
   return redactPathText(redactCommandSecretText(value, REDACTED_ENV_VALUE), censorUsernameInLogs);
 }
 
 function shouldRedactSecretValue(key: string, value: unknown): boolean {
-  const { t } = useTranslation();
   if (SECRET_ENV_KEY_RE.test(key)) return true;
   if (typeof value !== "string") return false;
   return JWT_VALUE_RE.test(value);
 }
 
 function redactEnvValue(key: string, value: unknown, censorUsernameInLogs: boolean): string {
-  const { t } = useTranslation();
   if (
     typeof value === "object" &&
     value !== null &&
@@ -166,7 +163,6 @@ function isMarkdown(pathValue: string) {
 }
 
 function formatEnvForDisplay(envValue: unknown, censorUsernameInLogs: boolean): string {
-  const { t } = useTranslation();
   const env = asRecord(envValue);
   if (!env) return "<unable-to-parse>";
 
@@ -402,7 +398,6 @@ export function RunInvocationCard({
 }
 
 function parseStoredLogContent(content: string): RunLogChunk[] {
-  const { t } = useTranslation();
   const parsed: RunLogChunk[] = [];
   for (const line of content.split("\n")) {
     const trimmed = line.trim();
@@ -1188,7 +1183,6 @@ function SummaryRow({ label, children }: { label: string; children: React.ReactN
 }
 
 function LatestRunCard({ runs, agentId }: { runs: HeartbeatRun[]; agentId: string }) {
-  const { t } = useTranslation();
   if (runs.length === 0) return null;
 
   const sorted = [...runs].sort(
@@ -2497,7 +2491,6 @@ export function AgentSkillsTab({
   agent: Agent;
   companyId?: string;
 }) {
-  const { t } = useTranslation();
   type SkillRow = {
     id: string;
     key: string;
@@ -2730,7 +2723,6 @@ export function AgentSkillsTab({
         <>
           {(() => {
             const renderSkillRow = (skill: SkillRow) => {
-  const { t } = useTranslation();
               const adapterEntry = skill.adapterEntry ?? adapterEntryByKey.get(skill.key);
               const required = Boolean(adapterEntry?.required);
               const rowClassName = cn(
@@ -2786,7 +2778,6 @@ export function AgentSkillsTab({
                   checked={checked}
                   disabled={disabled}
                   onChange={(event) => {
-  const { t } = useTranslation();
                     const next = event.target.checked
                       ? Array.from(new Set([...skillDraft, skill.key]))
                       : skillDraft.filter((value) => value !== skill.key);
@@ -3537,7 +3528,6 @@ function LogViewer({ run, adapterType }: { run: HeartbeatRun; adapterType: strin
   }
 
   function appendLogContent(content: string, finalize = false) {
-  const { t } = useTranslation();
     if (!content && !finalize) return;
     const combined = `${pendingLogLineRef.current}${content}`;
     const split = combined.split("\n");
@@ -3709,7 +3699,6 @@ function LogViewer({ run, adapterType }: { run: HeartbeatRun; adapterType: strin
   }, [run.id, run.logRef, run.logBytes, isLive]);
 
   async function loadMorePersistedLog() {
-  const { t } = useTranslation();
     if (loadingMoreLog || !hasMoreLog) return;
     setLoadingMoreLog(true);
     setLogError(null);
@@ -3774,13 +3763,11 @@ function LogViewer({ run, adapterType }: { run: HeartbeatRun; adapterType: strin
     let socket: WebSocket | null = null;
 
     const scheduleReconnect = () => {
-  const { t } = useTranslation();
       if (closed) return;
       reconnectTimer = window.setTimeout(connect, 1500);
     };
 
     const connect = () => {
-  const { t } = useTranslation();
       if (closed) return;
       const protocol = window.location.protocol === "https:" ? "wss" : "ws";
       const url = `${protocol}://${window.location.host}/api/companies/${encodeURIComponent(run.companyId)}/events/ws`;
@@ -4125,7 +4112,6 @@ function KeysTab({ agentId, companyId }: { agentId: string; companyId?: string }
   });
 
   function copyToken() {
-  const { t } = useTranslation();
     if (!newToken) return;
     navigator.clipboard.writeText(newToken);
     setCopied(true);

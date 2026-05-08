@@ -286,7 +286,6 @@ function slugifyDocumentKey(input: string) {
 }
 
 function titleizeFilename(input: string) {
-  const { t } = useTranslation();
   return input
     .split(/[-_ ]+/g)
     .filter(Boolean)
@@ -955,7 +954,6 @@ function IssueDetailActivityTab({
   checkingMonitorNow,
   handoffFocusSignal = 0,
 }: IssueDetailActivityTabProps) {
-  const { t } = useTranslation();
   const { data: activity, isLoading: activityLoading } = useQuery({
     queryKey: queryKeys.issues.activity(issueId),
     queryFn: () => activityApi.forIssue(issueId),
@@ -2602,7 +2600,6 @@ export function IssueDetail() {
   useEffect(() => {
     if (!issue?.id || !canQuickArchiveFromInbox) return;
     const handleKeyDown = (event: KeyboardEvent) => {
-  const { t } = useTranslation();
       const action = resolveInboxQuickArchiveKeyAction({
         armed: canQuickArchiveFromInbox,
         defaultPrevented: event.defaultPrevented,
@@ -2639,7 +2636,6 @@ export function IssueDetail() {
     }
 
     const clearArmTimeout = () => {
-  const { t } = useTranslation();
       if (goToInboxShortcutTimeoutRef.current !== null) {
         window.clearTimeout(goToInboxShortcutTimeoutRef.current);
         goToInboxShortcutTimeoutRef.current = null;
@@ -2647,13 +2643,11 @@ export function IssueDetail() {
     };
 
     const disarm = () => {
-  const { t } = useTranslation();
       goToInboxShortcutArmedRef.current = false;
       clearArmTimeout();
     };
 
     const arm = () => {
-  const { t } = useTranslation();
       goToInboxShortcutArmedRef.current = true;
       clearArmTimeout();
       goToInboxShortcutTimeoutRef.current = window.setTimeout(() => {
@@ -2673,7 +2667,6 @@ export function IssueDetail() {
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
-  const { t } = useTranslation();
       const action = resolveIssueDetailGoKeyAction({
         armed: goToInboxShortcutArmedRef.current,
         defaultPrevented: event.defaultPrevented,
@@ -2762,7 +2755,6 @@ export function IssueDetail() {
   const copyIssueToClipboard = async () => {
     if (!issue) return;
     const decodeEntities = (text: string) => {
-  const { t } = useTranslation();
       const el = document.createElement("textarea");
       el.innerHTML = text;
       return el.value;
