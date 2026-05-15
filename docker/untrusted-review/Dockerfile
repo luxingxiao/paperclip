@@ -1,6 +1,8 @@
 FROM node:lts-trixie-slim
 
-RUN apt-get update \
+RUN sed -i 's|http://deb.debian.org|http://mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources 2>/dev/null \
+      || sed -i 's|http://deb.debian.org|http://mirrors.aliyun.com|g' /etc/apt/sources.list 2>/dev/null || true \
+  && apt-get update \
   && apt-get install -y --no-install-recommends \
     bash \
     ca-certificates \
@@ -18,7 +20,7 @@ RUN apt-get update \
 RUN ln -sf /usr/bin/fdfind /usr/local/bin/fd
 
 RUN corepack enable \
-  && npm install --global --omit=dev @anthropic-ai/claude-code@latest @openai/codex@latest
+  && npm install --global --omit=dev --registry=https://registry.npmmirror.com @anthropic-ai/claude-code@latest @openai/codex@latest
 
 RUN useradd --create-home --shell /bin/bash reviewer
 
